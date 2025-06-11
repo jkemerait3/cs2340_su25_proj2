@@ -6,7 +6,7 @@ from .models import CoffeeShop
 from .forms import ReviewForm
 from .models import Review
 from django.contrib.auth.decorators import login_required
-
+from django.contrib.auth.models import User
 def home(request):
     return render(request, 'home/base.html')
 
@@ -61,3 +61,7 @@ def delete_review(request, review_id):
 
 def about(request):
     return render(request, 'home/about.html')
+@login_required
+def account_view(request):
+    user_reviews = Review.objects.filter(user=request.user).select_related('shop').order_by('-created_at')
+    return render(request, 'home/account.html', {'reviews': user_reviews})

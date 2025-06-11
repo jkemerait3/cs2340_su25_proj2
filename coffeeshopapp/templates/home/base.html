@@ -118,6 +118,7 @@
           <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
           <li class="nav-item"><a class="nav-link" href="/shops/">Shops</a></li>
           {% if request.user.is_authenticated %}
+          <li class="nav-item"><a class="nav-link" href="{% url 'account' %}">Account</a></li>
           <form action="{% url 'logout' %}" method="post" style="display: inline;">
             {% csrf_token %}
             <button type="submit" class="nav-link btn btn-link text-white p-0" style="background: none; border: none;">Logout</button>
