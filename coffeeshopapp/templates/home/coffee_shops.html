@@ -1,0 +1,22 @@
+{% extends 'home/base.html' %}
+{% block title %}Coffee Shops{% endblock %}
+{% block content %}
+<div class="container mt-5">
+  <h2 class="mb-4">Coffee Shops in Atlanta</h2>
+  <div class="row">
+    {% for shop in shops %}
+    <div class="col-md-6 col-lg-4 mb-4">
+      <div class="card bg-dark text-white">
+        <img src="{{ shop.image.url }}" class="card-img-top" alt="{{ shop.name }}">
+        <div class="card-body">
+          <h5 class="card-title">{{ shop.name }}</h5>
+          <p class="card-text">{{ shop.address }}</p>
+          <p><strong>Hours:</strong> {{ shop.hours }}</p>
+          <p><small>{{ shop.amenities }}</small></p>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}
