@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block title %}Your Account{% endblock %}
+{% block content %}
+<div class="container mt-5">
+  <h2 class="mb-4">Welcome, {{ request.user.username }} 👋</h2>
+  <p><strong>Email:</strong> {{ request.user.email }}</p>
+
+  <hr class="my-4">
+
+  <h4>Your Reviews</h4>
+
+  {% if reviews %}
+    {% for review in reviews %}
+      <div class="card bg-dark text-light mb-3">
+        <div class="card-body">
+          <h5 class="card-title">{{ review.shop.name }} <small class="text-muted">({{ review.rating }}/5)</small></h5>
+          <p class="card-text">{{ review.content }}</p>
+          <p class="card-text"><small class="text-muted">{{ review.created_at|date:"F j, Y" }}</small></p>
+          <a href="{% url 'edit_review' review.id %}" class="btn btn-sm btn-outline-light">Edit</a>
+          <a href="{% url 'delete_review' review.id %}" class="btn btn-sm btn-outline-danger">Delete</a>
+        </div>
+      </div>
+    {% endfor %}
+  {% else %}
+    <p class="text-muted">You haven't written any reviews yet.</p>
+  {% endif %}
+</div>
+{% endblock %}
