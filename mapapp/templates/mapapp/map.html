@@ -1,0 +1,18 @@
+{% extends "home/base.html" %}
+{% load static %}
+
+
+{% block content %}
+<h2>Coffee Shops Map</h2>
+<div id="map" style="height: 600px;"></div>
+
+<!-- Leaflet CDN -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+<!-- Pass Django data to JavaScript -->
+<script>
+    const coffeeShops = {{ coffee_shops|json_script:"coffeeShopsData" }};
+</script>
+<script src="{% static 'mapapp/js/map.js' %}"></script>
+{% endblock %}
