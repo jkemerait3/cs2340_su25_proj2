@@ -9,7 +9,22 @@
         <div class="card bg-dark text-white h-100">
           <img src="{{ shop.image.url }}" class="card-img-top" alt="{{ shop.name }}">
           <div class="card-body d-flex flex-column">
-            <h5 class="card-title">{{ shop.name }}</h5>
+            <div class="mb-2 text-center position-relative">
+              <h5 class="card-title mb-0">{{ shop.name }}</h5>
+              {% if user.is_authenticated %}
+              <form method="POST" action="{% url 'coffee_shops.like_coffee_shop' id=shop.id %}" class="m-0">
+                {% csrf_token %}
+                <button type="submit" class="btn p-0 border-0 bg-transparent" style="font-size: 1.4rem; line-height: 1;">
+                  {% if shop.id in liked_ids %}
+                  ❤️
+                  {% else %}
+                  🤍
+                  {% endif %}
+                </button>
+              </form>
+              {% endif %}
+            </div>
+
             <p class="card-text">{{ shop.address }}</p>
             <p><strong>Hours:</strong> {{ shop.hours }}</p>
             <p><small>{{ shop.amenities }}</small></p>

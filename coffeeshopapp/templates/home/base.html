@@ -122,7 +122,10 @@
             {% csrf_token %}
             <button type="submit" class="nav-link btn btn-link text-white p-0" style="background: none; border: none;">Logout</button>
           </form>
-          
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'coffee_shops.liked_coffee_shops' %}">Favorites</a>
+          </li>
+
           {% else %}
             <li class="nav-item"><a class="nav-link" href="/login/">Login</a></li>
             <li class="nav-item"><a class="nav-link" href="/register/">Register</a></li>

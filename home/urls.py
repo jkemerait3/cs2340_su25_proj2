@@ -10,5 +10,7 @@ urlpatterns = [
     path('shops/<int:shop_id>/review/', views.add_review, name='add_review'),
     path('review/<int:review_id>/edit/', views.edit_review, name='edit_review'),
     path('review/<int:review_id>/delete/', views.delete_review, name='delete_review'),
-    path('about/', views.about, name='about'),
+    path('coffee_shops/<int:id>/like/', views.like_coffee_shop, name='coffee_shops.like_coffee_shop'),
+    path('coffee_shops/liked/', views.liked_coffee_shops, name='coffee_shops.liked_coffee_shops'),
+    path('favorites/', views.liked_coffee_shops, name='coffee_shops.liked_coffee_shops'),
 ]

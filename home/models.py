@@ -17,3 +17,10 @@ class Review(models.Model):
     rating = models.PositiveSmallIntegerField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+class Favorite(models.Model):
+    id = models.AutoField(primary_key=True)
+    coffeeshop = models.ForeignKey(CoffeeShop, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    def __str__(self):
+        return f"{self.id} - {self.movie.name}"
