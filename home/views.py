@@ -1,4 +1,5 @@
 from django.shortcuts import get_object_or_404, render
+from django.shortcuts import render
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
 from django.shortcuts import redirect
@@ -31,7 +32,6 @@ def coffee_shops(request):
         'shops': shops,
         'liked_ids': liked_ids
     })
-
 
 @login_required
 def add_review(request, shop_id):

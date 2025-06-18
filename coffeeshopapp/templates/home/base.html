@@ -117,6 +117,7 @@
         <ul class="navbar-nav ms-auto align-items-center">
           <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
           <li class="nav-item"><a class="nav-link" href="/shops/">Shops</a></li>
+          <li class="nav-item"><a class="nav-link" href="/map/">Map</a></li>
           {% if request.user.is_authenticated %}
           <form action="{% url 'logout' %}" method="post" style="display: inline;">
             {% csrf_token %}

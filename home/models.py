@@ -6,7 +6,9 @@ class CoffeeShop(models.Model):
     hours = models.CharField(max_length=100)
     amenities = models.TextField()
     image = models.ImageField(upload_to='shop_images/')
-
+    latitude = models.FloatField(null=True, blank=True)
+    longitude = models.FloatField(null=True, blank=True)
+    
     def __str__(self):
         return self.name
 
@@ -23,4 +25,4 @@ class Favorite(models.Model):
     coffeeshop = models.ForeignKey(CoffeeShop, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     def __str__(self):
-        return f"{self.id} - {self.movie.name}"
+        return f"{self.id} - {self.coffeeshop.name}"
