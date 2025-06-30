@@ -5,6 +5,7 @@ from django.shortcuts import redirect
 from .models import CoffeeShop
 from .forms import ReviewForm
 from .models import Review
+from .models import Favorite
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib import messages
