@@ -10,4 +10,8 @@ urlpatterns = [
     path('shops/<int:shop_id>/review/', views.add_review, name='add_review'),
     path('review/<int:review_id>/edit/', views.edit_review, name='edit_review'),
     path('review/<int:review_id>/delete/', views.delete_review, name='delete_review'),
+    path('about/', views.about, name='about'),
+    path('account/', views.account_view, name='account'),
+    path('shops/<int:pk>/', views.shop_detail, name='shop_detail'),
+    path('shops/<int:shop_id>/favorite/', views.toggle_favorite, name='toggle_favorite'),
 ]

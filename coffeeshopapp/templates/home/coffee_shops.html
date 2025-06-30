@@ -1,37 +1,66 @@
 {% extends 'home/base.html' %}
+{% load review_extras %}
 {% block title %}Coffee Shops{% endblock %}
 {% block content %}
 <div class="container mt-5">
   <h2 class="mb-4">Coffee Shops in Atlanta</h2>
-  <div class="row">
+  <div class="row gy-2">
     {% for shop in shops %}
-    <div class="col-md-6 col-lg-4 mb-4">
-      <div class="card bg-dark text-white">
-        <img src="{{ shop.image.url }}" class="card-img-top" alt="{{ shop.name }}">
-        <div class="card-body">
-          <h5 class="card-title">{{ shop.name }}</h5>
-          <p class="card-text">{{ shop.address }}</p>
-          <p><strong>Hours:</strong> {{ shop.hours }}</p>
-          <p><small>{{ shop.amenities }}</small></p>
-          <h6 class="mt-3">Reviews:</h6>
-          {% for review in shop.reviews.all %}
-            <div class="bg-dark p-2 rounded mb-2">
-              <strong>{{ review.user.username }}</strong> ({{ review.rating }}/5):<br>
-              {{ review.content }}<br>
-              <small>{{ review.created_at|date:"M, d, Y" }}</small>
-        
-              {% if review.user == request.user %}
-                <div class="mt-1">
-                  <a href="{% url 'edit_review' review.id %}" class="btn btn-sm btn-outline-light">Edit</a>
-                  <a href="{% url 'delete_review' review.id %}" class="btn btn-sm btn-outline-danger">Delete</a>
-                </div>
-              {% endif %}
+      <div class="col-6 col-md-4 col-lg-3 mb-3">
+        <a href="{% url 'shop_detail' shop.id %}" class="text-decoration-none" style="color: inherit;">
+          <div class="card h-100 text-center hover-scale" style="font-size: 0.85rem; background-color: #B7A684; padding: 0.4rem;">
+            <!-- Image -->
+            <div style="width: 100%; height: 200px; background-color: #B7A684; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+              <img src="{{ shop.image.url }}"
+                   alt="{{ shop.name }}"
+                   style="max-width: 100%; max-height: 100%; object-fit: contain;">
             </div>
-          {% empty %}
-            <p class="text-muted">No reviews yet.</p>
-          {% endfor %}
-          <a href="{% url 'add_review' shop.id %}" class="btn btn-sm btn-outline-light mt-2">Write a Review</a>
-        {% endfor %}
+
+            <!-- Content -->
+            <div class="card-body p-2">
+              <div class="d-flex justify-content-center align-items-center mb-1">
+                <h5 class="card-title me-2" style="font-size: 1.4rem; color: #2B1D14; margin: 0.4rem 0 0.2rem 0;">{{ shop.name }}</h5>
+                {% if shop in bookmarked_shops %}
+                  <i class="bi bi-bookmark-fill" style="color: #ffc107; font-size: 1.2rem;"></i>
+                {% endif %}
+              </div>
+
+              {% if shop.review_count > 0 %}
+                <!-- Fractional Star Rating -->
+                <div class="position-relative d-inline-block mb-1" style="width: 100px; height: 20px;">
+                  <div class="position-absolute top-0 start-0 overflow-hidden" style="width: '{{ shop.average_rating|star_fill_percent }}%';">
+                    {% for _ in "12345" %}
+                      <i class="bi bi-star-fill text-warning"></i>
+                    {% endfor %}
+                  </div>
+                  <div class="position-absolute top-0 start-0">
+                    {% for _ in "12345" %}
+                      <i class="bi bi-star text-warning"></i>
+                    {% endfor %}
+                  </div>
+                </div>
+                <div>
+                  <small class="text-muted">{{ shop.average_rating|floatformat:1 }} / 5 ({{ shop.review_count }} reviews)</small>
+                </div>
+              {% else %}
+                <small class="text-muted">No reviews yet</small>
+              {% endif %}
+              <p style="color: #2B1D14; margin-bottom: 0.2rem;">{{ shop.address }}</p>
+              <p style="color: #2B1D14; margin-bottom: 0.2rem;"><strong>Hours:</strong> {{ shop.hours }}</p>
+              <p style="color: #2B1D14; margin-bottom: 0.4rem;"><small>{{ shop.amenities }}</small></p>
+            </div>
+          </div>
+        </a>
+      </div>
+    {% endfor %}
   </div>
 </div>
+
+<style>
+  .hover-scale:hover {
+    transform: scale(1.015);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+</style>
 {% endblock %}
