@@ -10,6 +10,9 @@ class CoffeeShop(models.Model):
     image = models.ImageField(upload_to='shop_images/')
     is_top_pick = models.BooleanField(default=False)
     favorited_by = models.ManyToManyField(User, related_name='favorite_shops', blank=True)
+    latitude = models.FloatField(null=True, blank=True)
+    longitude = models.FloatField(null=True, blank=True)
+    
     def __str__(self):
         return self.name
     def average_rating(self):

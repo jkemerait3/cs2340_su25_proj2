@@ -1,0 +1,162 @@
+{% extends "home/base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container-fluid p-0">
+    <div class="row" style="height: calc(100vh - 100px);">
+
+        <div class="col-md-4 p-4 rounded" style="background-color: #EDE8D0; height: 100%; overflow-y: auto;">
+            <h5 class="text-center p-3" style="color: #2B1D14; font-size: 25px">Search Cafe Finder</h5>
+            <div class="mb-3">
+                <input type="text" id="bookmarkSearchBar" class="form-control search-bar" placeholder="🔍 Search shops...">
+            </div>
+
+            <ul class="nav nav-tabs nav-justified mb-3" id="shopTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="all-shops-tab" data-bs-toggle="tab" data-bs-target="#all-shops-pane" type="button" role="tab" aria-controls="all-shops-pane" aria-selected="true" style="color: #2B1D14; background-color: #B7A684; border-color: #B7A684;">All Shops</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="bookmarked-shops-tab" data-bs-toggle="tab" data-bs-target="#bookmarked-shops-pane" type="button" role="tab" aria-controls="bookmarked-shops-pane" aria-selected="false" style="color: #2B1D14; background-color: #EDE8D0; border-color: #B7A684;">Bookmarked Shops</button>
+                </li>
+            </ul>
+
+            <div class="tab-content" id="shopTabContent">
+                <div class="tab-pane fade show active" id="all-shops-pane" role="tabpanel" aria-labelledby="all-shops-tab" tabindex="0">
+                    <p class="text-muted p-3 text-center" id="all-shops-loading-message">Loading all shops...</p>
+                    <div id="all-shops-list">
+                        </div>
+                </div>
+
+                <div class="tab-pane fade" id="bookmarked-shops-pane" role="tabpanel" aria-labelledby="bookmarked-shops-tab" tabindex="0">
+                    {% if bookmarked_shops %}
+                        <div id="bookmarked-shops-list">
+                            {% for shop in bookmarked_shops %}
+                                {# --- IMPORTANT CHANGE: REMOVED THE OUTER <a> TAG --- #}
+                                <div class="text-decoration-none bookmark-shop-item card mb-4 hover-scale" 
+                                     style="background-color: #B7A684; color: #2B1D14; height: 200px;"
+                                     data-django-shop-id="{{ shop.id }}">
+                                    <div class="row g-0 h-100">
+                                        <div class="col-auto d-flex align-items-center justify-content-center" style="padding: 10px;">
+                                            <img src="{{ shop.image.url }}" alt="{{ shop.name }}" class="rounded" style="width: 160px; height: 160px; object-fit: contain;">
+                                        </div>
+                                        <div class="col d-flex">
+                                            <div class="card-body d-flex flex-column justify-content-center w-100">
+                                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                                    <h5 class="card-title mb-0">{{ shop.name }}</h5>
+                                                    <form method="post" action="{% url 'toggle_favorite' shop.id %}">
+                                                        {% csrf_token %}
+                                                        <button type="submit" style="border: none; background: none; padding: 0;">
+                                                            <i class="bi bi-bookmark-fill" style="font-size: 1.3rem; color: #ffc107;"></i>
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                                <p class="card-text mb-2"><small>{{ shop.address }}</small></p>
+                                                <div class="text-center">
+                                                    {# --- IMPORTANT CHANGE: SPAN TO BUTTON, ADDED data-shop-id and class --- #}
+                                                    <button type="button" 
+                                                            class="btn btn-sm btn-outline-dark mt-2 view-shop-details-btn" 
+                                                            data-shop-id="{{ shop.id }}">
+                                                        View Shop Details
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {# --- END OF MODIFIED CARD STRUCTURE --- #}
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-muted text-center">You haven't bookmarked any shops yet. Explore the map to find and bookmark your favorite coffee shops!</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div id="search-results-panel" class="mt-3 small" style="display: none;">
+                <h5 class="text-center p-3" style="color: #2B1D14">Search Results</h5>
+                <div id="search-results-list">
+                </div>
+                <button id="backToActiveTabFromSearchBtn" class="btn btn-sm btn-outline-light mt-3" style="color: #EDE8D0; border-color: #EDE8D0;">
+                    <i class="bi bi-arrow-left"></i> Back
+                </button>
+            </div>
+
+            <div id="shop-details" class="mt-3 small" style="display: none;">
+            </div>
+        </div>
+
+        <div class="col-md-8 p-0">
+            <div id="map" style="width: 100%; height: 100%;"></div>
+        </div>
+    </div>
+</div>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+{{ coffee_shops|json_script:"coffeeShopsData" }}
+
+{# --- NEW: MODAL HTML STRUCTURE FOR SHOP DETAILS --- #}
+<div class="modal fade" id="shopDetailsModal" tabindex="-1" aria-labelledby="shopDetailsModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="shopDetailsModalLabel">Shop Details</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" id="modalShopDetailsContent">
+        {# Shop details will be dynamically loaded here #}
+        <h4 id="modalShopName"></h4>
+        <p><strong>Address:</strong> <span id="modalShopAddress"></span></p>
+        <p><strong>Hours:</strong> <span id="modalShopHours"></span></p>
+        <p><strong>Amenities:</strong> <span id="modalShopAmenities"></span></p>
+        <p><img id="modalShopImage" src="" alt="Shop Image" class="img-fluid"></p>
+        {# Optional: Add a link to the full shop_detail page #}
+        <a id="modalViewFullShopPage" href="#" class="btn btn-sm btn-info mt-3">View Full Shop Page</a>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{# Import your JavaScript modules as type="module" #}
+<script type="module" src="{% static 'mapapp/js/main.js' %}"></script>
+{% endblock %}
+
+{% block extra_styles %}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+<style>
+/* Adjust tab button colors based on active/inactive state */
+.nav-tabs .nav-link {
+    border: 1px solid #B7A684;
+}
+
+.nav-tabs .nav-link.active {
+    background-color: #B7A684 !important;
+    color: #2B1D14 !important;
+    border-color: #B7A684 !important;
+}
+
+.nav-tabs .nav-link:not(.active) {
+    background-color: #EDE8D0 !important;
+    color: #2B1D14 !important;
+}
+
+.emoji-icon {
+    font-size: 22px;
+    text-align: center;
+    line-height: 25px;
+}
+
+/* Hover Animation Style - applies to both .hover-card and .hover-scale classes */
+.hover-card, .hover-scale {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.hover-card:hover, .hover-scale:hover {
+    transform: translateY(-4px); /* Lifts the card slightly */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); /* Adds a shadow for depth */
+}
+</style>
+{% endblock %}

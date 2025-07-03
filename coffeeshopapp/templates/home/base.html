@@ -2,230 +2,237 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{% block title %}Coffee Shop Finder{% endblock %}</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
-  <style>
-    html, body {
-      height: 100%;
-    }
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Coffee Shop Finder{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Ensures HTML and body take full viewport height */
+        html, body {
+            height: 100%;
+        }
 
-    body {
-      font-family: 'Playfair Display', serif;
-      background-color: #EDE8D0;
-      color: #222;
-      margin: 0;
-      display: flex;
-      flex-direction: column;
-    }
+        /* Basic body styling, font, background, and flex layout for sticky footer */
+        body {
+            font-family: 'Playfair Display', serif;
+            background-color: #EDE8D0; /* Light beige */
+            color: #222; /* Dark text color */
+            margin: 0;
+            display: flex;
+            flex-direction: column; /* Stacks header, main content, and footer vertically */
+        }
 
-    h1, h2, h3, h4, h5, h6 {
-      color: #2B1D14;
-      font-weight: 700;
-    }
+        /* Styling for headings across the site */
+        h1, h2, h3, h4, h5, h6 {
+            color: #2B1D14; /* Dark brown */
+            font-weight: 700;
+        }
 
-    .navbar {
-      background-color: #2B1D14 !important;
-      border-bottom: none;
-    }
+        /* Navbar background color and border reset */
+        .navbar {
+            background-color: #2B1D14 !important; /* Dark brown, important to override Bootstrap */
+            border-bottom: none;
+        }
 
-    .navbar-brand {
-      font-weight: 700;
-      font-size: 1.5rem;
-      padding: 5px 10px;
-      background-color: #EDE8D0;
-      color: #2B1D14 !important;
-      border-radius: 50%;
-    }
+        /* Styling for the navbar brand/logo */
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.5rem;
+            padding: 5px 10px;
+            background-color: #EDE8D0; /* Light beige background */
+            color: #2B1D14 !important; /* Dark brown text */
+            border-radius: 50%; /* Circular shape */
+        }
 
-    .navbar-nav .nav-link {
-      color: #EDE8D0;
-      margin-left: 1rem;
-      font-weight: 500;
-    }
+        /* Styling for navigation links */
+        .navbar-nav .nav-link {
+            color: #EDE8D0; /* Light beige text */
+            margin-left: 1rem;
+            font-weight: 500;
+        }
 
-    .navbar-nav .nav-link:hover {
-      color: #B7A684;
-    }
+        /* Hover effect for navigation links */
+        .navbar-nav .nav-link:hover {
+            color: #B7A684; /* Medium brown on hover */
+        }
 
-    .search-bar {
-      background-color: #fff;
-      border: 1px solid #ccc;
-      border-radius: 30px;
-      padding: 6px 16px;
-      color: #333;
-    }
+        /* Although the search bar is removed from the template, its style definition remains here.
+           It's good practice to remove unused CSS, but per instructions, it's left for now. */
+        .search-bar {
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 30px;
+            padding: 6px 16px;
+            color: #333;
+        }
 
+        /* Main content area takes up flexible space, pushing footer to the bottom */
+        main {
+            flex: 1 0 auto;
+        }
 
-    main {
-      flex: 1 0 auto;
-    }
+        /* Hero section styling */
+        .hero {
+            background-color: #EDE8D0; /* Light beige */
+            padding: 100px 20px;
+            text-align: center;
+        }
 
-    .hero {
-      background-color: #EDE8D0;
-      padding: 100px 20px;
-      text-align: center;
-    }
+        /* Heading colors within the hero section */
+        .hero h1, .hero h2 {
+            color: #2B1D14; /* Dark brown */
+        }
 
-    .hero h1, .hero h2 {
-      color: #2B1D14;
-    }
+        /* Paragraph styling within the hero section */
+        .hero p {
+            font-size: 0.95rem;
+            max-width: 600px;
+            margin: 1rem auto;
+            color: #555; /* Medium dark grey */
+        }
 
-    .hero p {
-      font-size: 0.95rem;
-      max-width: 600px;
-      margin: 1rem auto;
-      color: #555;
-    }
+        /* Button styling within the hero section */
+        .hero .btn {
+            margin-top: 1.5rem;
+            border-radius: 50px;
+            padding: 10px 25px;
+            background-color: #2B1D14; /* Dark brown */
+            color: #EDE8D0; /* Light beige text */
+            border: none;
+            font-weight: 600;
+        }
 
-    .hero .btn {
-      margin-top: 1.5rem;
-      border-radius: 50px;
-      padding: 10px 25px;
-      background-color: #2B1D14;
-      color: #EDE8D0;
-      border: none;
-      font-weight: 600;
-    }
+        /* General card styling (used on other pages or dynamically generated content) */
+        .card {
+            background-color: #B7A684; /* Medium brown */
+            color: #111; /* Very dark grey text */
+            border: none;
+        }
 
-    .card {
-      background-color: #B7A684;
-      color: #111;
-      border: none;
-    }
+        /* Styling for outline light buttons */
+        .btn-outline-light {
+            color: #2B1D14; /* Dark brown text */
+            border-color: #2B1D14; /* Dark brown border */
+        }
 
-    .btn-outline-light {
-      color: #2B1D14;
-      border-color: #2B1D14;
-    }
+        /* Hover effect for outline light buttons */
+        .btn-outline-light:hover {
+            background-color: #2B1D14; /* Dark brown background on hover */
+            color: #EDE8D0; /* Light beige text on hover */
+        }
 
-    .btn-outline-light:hover {
-      background-color: #2B1D14;
-      color: #EDE8D0;
-    }
+        /* Footer styling: fixed to bottom, dark background, light text */
+        footer {
+            flex-shrink: 0; /* Prevents footer from shrinking */
+            background-color: #2B1D14; /* Dark brown */
+            text-align: center;
+            padding: 1rem;
+            color: #EDE8D0; /* Light beige text */
+            font-size: 0.9rem;
+        }
 
-    footer {
-      flex-shrink: 0;
-      background-color: #2B1D14;
-      text-align: center;
-      padding: 1rem;
-      color: #EDE8D0;
-      font-size: 0.9rem;
-    }
-
-    @media (max-width: 768px) {
-      .hero h1 {
-        font-size: 2.2rem;
-      }
-      .hero h2 {
-        font-size: 1.2rem;
-      }
-    }
-  </style>
+        /* Responsive adjustments for smaller screens */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.2rem;
+            }
+            .hero h2 {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+    {% block extra_styles %}{% endblock %}
 </head>
 <body>
-  <nav class="navbar navbar-expand-lg fixed-top">
-    <div class="container">
-      <a class="navbar-brand" href="/">
-        <img src="/media/shop_images/CoffeeLogo.png" alt="Logo" style="height: 50px; border-radius: 50%;">
-      </a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav w-100 justify-content-end align-items-center flex-row flex-wrap gap-2 px-2">
-  <!-- Main links -->
-  <li class="nav-item"><a class="nav-link px-2" href="/">Home</a></li>
-  <li class="nav-item"><a class="nav-link px-2" href="/about/">About</a></li>
-  <li class="nav-item"><a class="nav-link px-2" href="/shops/">Shops</a></li>
-  <li class="nav-item"><a class="nav-link px-2" href="/map/">Map</a></li>
+    <nav class="navbar navbar-expand-lg fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <img src="/media/shop_images/CoffeeLogo.png" alt="Logo" style="height: 50px; border-radius: 50%;">
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav w-100 justify-content-end align-items-center flex-row flex-wrap gap-2 px-2">
+                    <li class="nav-item"><a class="nav-link px-2" href="/">Home</a></li>
+                    <li class="nav-item"><a class="nav-link px-2" href="/about/">About</a></li>
+                    <li class="nav-item"><a class="nav-link px-2" href="/shops/">Shops</a></li>
+                    <li class="nav-item"><a class="nav-link px-2" href="/map/">Map</a></li>
 
-  <!-- Search bar -->
-  <li class="nav-item px-3">
-    <input type="text" class="form-control search-bar" placeholder="🔍 Search..."
-           style="width: 260px; padding: 6px 16px; border-radius: 30px;">
-  </li>
+                    <li class="nav-item d-none d-md-block px-2">
+                        <div style="width: 1.5px; height: 36px; background-color: #fff; margin: 0 auto;"></div>
+                    </li>
 
-  <!-- Vertical divider -->
-  <li class="nav-item d-none d-md-block px-2">
-    <div style="width: 1.5px; height: 36px; background-color: #fff; margin: 0 auto;"></div>
-  </li>
+                    {% if request.user.is_authenticated %}
+                        <li class="nav-item"><a class="nav-link px-2" href="{% url 'account' %}">Account</a></li>
+                        <li class="nav-item">
+                            <form action="{% url 'logout' %}" method="post" class="d-inline">
+                                {% csrf_token %}
+                                <button type="submit" class="nav-link btn btn-link p-0" style="background: none; border: none;">Logout</button>
+                            </form>
+                        </li>
+                    {% else %}
+                        <li class="nav-item"><a class="nav-link px-2" href="/login/">Login</a></li>
+                        <li class="nav-item"><a class="nav-link px-2" href="/register/">Register</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
 
-  <!-- Auth links -->
-  {% if request.user.is_authenticated %}
-    <li class="nav-item"><a class="nav-link px-2" href="{% url 'account' %}">Account</a></li>
-    <li class="nav-item">
-      <form action="{% url 'logout' %}" method="post" class="d-inline">
-        {% csrf_token %}
-        <button type="submit" class="nav-link btn btn-link p-0" style="background: none; border: none;">Logout</button>
-      </form>
-    </li>
-  {% else %}
-    <li class="nav-item"><a class="nav-link px-2" href="/login/">Login</a></li>
-    <li class="nav-item"><a class="nav-link px-2" href="/register/">Register</a></li>
-  {% endif %}
-</ul>
-      </div>
-    </div>
-  </nav>
+    <main>
+        <div class="hero">
+            {% block content %}
+            <h1>Welcome to Coffee Shop Finder</h1>
+            <h2>Find your perfect study spot in Atlanta's best coffee shops.</h2>
+            <p>Explore curated study-ready coffee shops across Atlanta. Dive into community reviews and discover your next favorite spot.</p>
+            <a href="/shops/" class="btn">See more</a>
+            {% endblock %}
+        </div>
+    </main>
 
-  <main>
-    <div class="hero">
-      {% block content %}
-      <h1>Welcome to Coffee Shop Finder</h1>
-      <h2>Find your perfect study spot in Atlanta's best coffee shops.</h2>
-      <p>Explore curated study-ready coffee shops across Atlanta. Dive into community reviews and discover your next favorite spot.</p>
-      <a href="/shops/" class="btn">See more</a>
-      {% endblock %}
-    </div>
-  </main>
+    <footer>
+        <div class="container d-flex flex-column flex-md-row justify-content-between align-items-center flex-wrap text-center gap-3">
+            
+            <div>
+                <small>&copy; 2025 Coffee Shop Finder. All rights reserved.</small>
+            </div>
 
-  <footer>
-  <div class="container d-flex flex-column flex-md-row justify-content-between align-items-center flex-wrap text-center gap-3">
-    
-    <!-- Site Info -->
-    <div>
-      <small>&copy; 2025 Coffee Shop Finder. All rights reserved.</small>
-    </div>
+            <div class="d-flex flex-wrap justify-content-center gap-3">
+                <a href="/" class="text-decoration-none" style="color: #EDE8D0;">Home</a>
+                <a href="/about/" class="text-decoration-none" style="color: #EDE8D0;">About</a>
+                <a href="/shops/" class="text-decoration-none" style="color: #EDE8D0;">Shops</a>
+                <a href="/map/" class="text-decoration-none" style="color: #EDE8D0;">Map</a>
+            </div>
 
-    <!-- Navigation Links -->
-    <div class="d-flex flex-wrap justify-content-center gap-3">
-      <a href="/" class="text-decoration-none" style="color: #EDE8D0;">Home</a>
-      <a href="/about/" class="text-decoration-none" style="color: #EDE8D0;">About</a>
-      <a href="/shops/" class="text-decoration-none" style="color: #EDE8D0;">Shops</a>
-      <a href="/map/" class="text-decoration-none" style="color: #EDE8D0;">Map</a>
-    </div>
+            <div>
+                <a href="https://github.com/jkemerait3/cs2340_su25_proj2.git" class="text-decoration-none me-3" style="color: #EDE8D0;">
+                    GitHub Repo
+                </a>
+                <a href="https://sites.google.com/view/cs2340project1summer2025/home" class="text-decoration-none" style="color: #EDE8D0;">
+                    Team Website
+                </a>
+            </div>
 
+            <div class="d-flex align-items-center gap-3">
+                <a href="mailto:sam.allahverdi1@gmail.com" class="text-decoration-none" style="color: #EDE8D0;">
+                    <i class="bi bi-envelope-fill me-1"></i>
+                </a>
+                <a href="#" class="text-decoration-none" style="color: #EDE8D0;">
+                    <i class="bi bi-instagram"></i>
+                </a>
+                <a href="#" class="text-decoration-none" style="color: #EDE8D0;">
+                    <i class="bi bi-twitter-x"></i>
+                </a>
+            </div>
 
-    <!-- Team + Resources -->
-    <div>
-      <a href="https://github.com/jkemerait3/cs2340_su25_proj2.git" class="text-decoration-none me-3" style="color: #EDE8D0;">
-        GitHub Repo
-      </a>
-      <a href="https://sites.google.com/view/cs2340project1summer2025/home" class="text-decoration-none" style="color: #EDE8D0;">
-        Team Website
-      </a>
-    </div>
+        </div>
+    </footer>
 
-    <!-- Contact + Social -->
-    <div class="d-flex align-items-center gap-3">
-      <a href="mailto:sam.allahverdi1@gmail.com" class="text-decoration-none" style="color: #EDE8D0;">
-        <i class="bi bi-envelope-fill me-1"></i> Contact Us
-      </a>
-      <a href="#" class="text-decoration-none" style="color: #EDE8D0;">
-        <i class="bi bi-instagram"></i>
-      </a>
-      <a href="#" class="text-decoration-none" style="color: #EDE8D0;">
-        <i class="bi bi-twitter-x"></i>
-      </a>
-    </div>
-
-  </div>
-</footer>
-
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    {% block extra_js %}{% endblock %}
 </body>
 </html>
