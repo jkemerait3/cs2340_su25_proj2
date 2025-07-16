@@ -9,6 +9,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.db.models import Avg, Count
+from summarizer.utils import summarize_reviews_hf
 
 def home(request):
     top_picks = CoffeeShop.objects.filter(is_top_pick=True)[:3]
@@ -45,23 +46,23 @@ def shops(request):
         'bookmarked_shops': bookmarked_shops,
     })
 
-def shop_detail(request, pk):
-    shop = get_object_or_404(CoffeeShop, pk=pk)
-    user_review = None
-    other_reviews = shop.reviews.all()
+def shop_detail(request, shop_id):
+    shop = get_object_or_404(CoffeeShop, id=shop_id)
+    reviews = Review.objects.filter(shop=shop)
     
-    if request.user.is_authenticated:
-        user_review = Review.objects.filter(
-            user=request.user, 
-            shop=shop
-        ).first()
-        if user_review:
-            other_reviews = other_reviews.exclude(id=user_review.id)
-    
-    return render(request, 'home/shop_detail.html', {
-        'shop': shop,
-        'user_review': user_review,
-        'other_reviews': other_reviews.order_by('-created_at')
+    user_review = (
+        reviews.filter(user=request.user).first() if request.user.is_authenticated else None
+    )
+    other_reviews = reviews.exclude(id=user_review.id) if user_review else reviews
+
+    # Combine review texts for summarization
+    review_texts = [review.content for review in reviews]
+    summary = summarize_reviews_hf(review_texts,shop.name)
+    return render(request, "home/shop_detail.html", {
+        "shop": shop,
+        "user_review": user_review,
+        "other_reviews": other_reviews,
+        "summary": summary,
     })
 
 @login_required
