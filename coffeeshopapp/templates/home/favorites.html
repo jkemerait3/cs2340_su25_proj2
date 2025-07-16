@@ -1,0 +1,22 @@
+{% extends 'home/base.html' %}
+{% block title %}My Liked Coffee Shops{% endblock %}
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4">My Favorite Coffee Shops</h2>
+    <div class="row">
+        {% for shop in shops %}
+        <div class="col-md-4 mb-3">
+            <div class="card bg-dark text-white h-100 p-3">
+                <h5>{{ shop.name }}</h5>
+                <p>{{ shop.address }}</p>
+                <p><strong>Hours:</strong> {{ shop.hours }}</p>
+                <p><small>{{ shop.amenities }}</small></p>
+                <a href="{% url 'add_review' shop.id %}" class="btn btn-outline-light btn-sm mt-auto">Write a Review</a>
+            </div>
+        </div>
+        {% empty %}
+        <p class="text-muted">You haven’t liked any coffee shops yet.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

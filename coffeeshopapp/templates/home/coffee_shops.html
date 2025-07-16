@@ -1,0 +1,74 @@
+{% extends 'home/base.html' %}
+{% load review_extras %}
+{% block title %}Coffee Shops{% endblock %}
+{% block content %}
+<div class="container mt-5">
+  <h2 class="mb-4 text-center">Coffee Shops in Atlanta</h2>
+
+  <div class="row gy-3 mb-4">
+    {% for shop in shops %}
+      <div class="col-6 col-md-4 col-lg-3">
+        <a href="{% url 'shop_detail' shop.id %}" class="text-decoration-none" style="color: inherit;">
+          <div class="card h-100 text-center hover-scale" style="font-size: 0.85rem; background-color: #B7A684; padding: 0.4rem;">
+            <!-- Image -->
+            <div style="width: 100%; height: 200px; background-color: #B7A684; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+              {% if shop.image and shop.image.url %}
+                <img src="{{ shop.image.url }}" alt="{{ shop.name }}"
+                class="img-fluid rounded shadow"
+                style="width: 100%; height: auto; object-fit: cover;">
+              {% else %}
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/Coffee_icon.svg/2048px-Coffee_icon.svg.png"
+                alt="Default coffee image"
+                class="img-fluid rounded shadow"
+                style="width: 100%; height: auto; object-fit: contain;">
+              {% endif %}
+            </div>
+
+            <!-- Content -->
+            <div class="card-body p-2">
+              <div class="d-flex justify-content-center align-items-center mb-1">
+                <h5 class="card-title me-2" style="font-size: 1.3rem; color: #2B1D14;">{{ shop.name }}</h5>
+                {% if shop in bookmarked_shops %}
+                  <i class="bi bi-bookmark-fill" style="color: #ffc107; font-size: 1.2rem;"></i>
+                {% endif %}
+              </div>
+
+              {% if shop.review_count > 0 %}
+                <div class="position-relative d-inline-block mb-1" style="width: 100px; height: 20px;">
+                  <div class="position-absolute top-0 start-0 overflow-hidden" style="width: {{ shop.average_rating|star_fill_percent }}%;">
+                    {% for _ in "12345" %}
+                      <i class="bi bi-star-fill text-warning"></i>
+                    {% endfor %}
+                  </div>
+                  <div class="position-absolute top-0 start-0">
+                    {% for _ in "12345" %}
+                      <i class="bi bi-star text-warning"></i>
+                    {% endfor %}
+                  </div>
+                </div>
+                <div>
+                  <small class="text-muted">{{ shop.average_rating|floatformat:1 }} / 5 ({{ shop.review_count }} reviews)</small>
+                </div>
+              {% else %}
+                <small class="text-muted">No reviews yet</small>
+              {% endif %}
+
+              <p style="color: #2B1D14; margin-bottom: 0.2rem;">{{ shop.address }}</p>
+              <p style="color: #2B1D14; margin-bottom: 0.2rem;"><strong>Hours:</strong> {{ shop.hours|default:"N/A" }}</p>
+              <p style="color: #2B1D14; margin-bottom: 0.4rem;"><small>{{ shop.amenities }}</small></p>
+            </div>
+          </div>
+        </a>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+
+<style>
+  .hover-scale:hover {
+    transform: scale(1.015);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+</style>
+{% endblock %}

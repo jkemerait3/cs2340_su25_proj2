@@ -1,0 +1,126 @@
+{% extends "home/base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container-fluid p-0" style="height: 100vh; overflow: hidden;">
+    <h2 class="text-center my-3">Coffee Shops Map</h2>
+    <div class="row flex-grow-1 overflow-hidden" style="height: calc(100vh - 100px);">
+
+        <!-- Left Sidebar -->
+        <div class="col-md-4 bg-dark text-white p-4 sidebar-panel position-relative">
+            <h5 class="text-warning mb-3">Filter & Browse</h5>
+
+            <!-- Search -->
+            <input type="text" id="search-input" class="form-control mb-3" placeholder="Search by name or location...">
+
+            <!-- Amenities Filters -->
+            <div class="mb-3 text-start">
+                <label class="form-check-label text-light">
+                    <input type="checkbox" class="form-check-input filter-box" name="wifi" value="Wi-Fi"> Wi-Fi
+                </label><br>
+                <label class="form-check-label text-light">
+                    <input type="checkbox" class="form-check-input filter-box" name="outlets" value="Outlets"> Outlets
+                </label><br>
+                <label class="form-check-label text-light">
+                    <input type="checkbox" class="form-check-input filter-box" value="Quiet"> Quiet
+                </label><br>
+                <label class="form-check-label text-light">
+                    <input type="checkbox" class="form-check-input filter-box" value="Open Late"> Open Late
+                </label><br>
+                <label class="text-light">
+                    <input type="checkbox" class="form-check-input" name="openNow"> Open Now
+                </label>
+            </div>
+            <div class="mb-3 text-start">
+                <label class="text-light d-block mb-1">Open After:</label>
+                <input type="time" name="openAfter" class="form-control mb-2">
+                <label class="text-light d-block mb-1">Close Before:</label>
+                <input type="time" name="closeBefore" class="form-control">
+            </div>
+            <p></p>
+            <!-- Shop List -->
+            <div id="shop-list" class="mb-3 small"></div>
+        </div>
+
+        <!-- Map Panel -->
+        <div class="col-md-8 p-0 position-relative">
+            <div id="map" style="width: 100%; height: 100%;"></div>
+
+            <!-- Floating Popup Info Card -->
+            <div id="shop-popup-card" class="card shadow-lg d-none" style="
+                position: absolute;
+                top: 80px;
+                left: 20px;
+                z-index: 9999;
+                max-width: 320px;
+                border-radius: 12px;
+                overflow: hidden;
+                background-color: white;
+            ">
+                <div class="card-body position-relative">
+                    <button type="button" class="btn-close position-absolute end-0 top-0 m-2" id="close-popup-card" aria-label="Close"></button>
+                    <div id="popup-card-content" class="small mt-4"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Leaflet CSS/JS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+<!-- Pass CoffeeShop JSON to JS if needed -->
+{{ coffee_shops|json_script:"coffeeShopsData" }}
+
+<!-- Resize shop list height dynamically -->
+<script>
+function resizeShopList() {
+    const windowHeight = window.innerHeight;
+    const headerHeight = 100;
+    const otherContentHeight = 260;
+    const available = windowHeight - headerHeight - otherContentHeight;
+
+    const shopList = document.getElementById('shop-list');
+    if (shopList) {
+        shopList.style.maxHeight = `${Math.floor(available)}px`;
+        shopList.style.overflowY = 'auto';
+    }
+}
+document.addEventListener("DOMContentLoaded", () => {
+    resizeShopList();
+    window.addEventListener("resize", resizeShopList);
+});
+</script>
+
+<!-- Your JS logic -->
+<script src="{% static 'mapapp/js/map.js' %}"></script>
+{% endblock %}
+
+{% block extra_styles %}
+<style>
+html, body {
+    height: 100%;
+    overflow: hidden;
+}
+
+.sidebar-panel {
+    height: 100%;
+    overflow-y: auto;
+    text-align: left;
+}
+
+#shop-list > div {
+    padding: 6px;
+    border-bottom: 1px solid #777;
+    cursor: pointer;
+}
+
+#popup-card-content img {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin-bottom: 10px;
+}
+</style>
+{% endblock %}
