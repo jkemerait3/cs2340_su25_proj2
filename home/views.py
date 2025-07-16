@@ -58,8 +58,7 @@ def shop_detail(request, shop_id):
 
     # Combine review texts for summarization
     review_texts = [review.content for review in reviews]
-    summary = summarize_reviews_hf(review_texts) if review_texts else "No reviews yet."
-
+    summary = summarize_reviews_hf(review_texts,shop.name)
     return render(request, "home/shop_detail.html", {
         "shop": shop,
         "user_review": user_review,
