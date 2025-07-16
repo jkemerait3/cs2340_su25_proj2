@@ -1,6 +1,6 @@
 {% extends "home/base.html" %}
 {% load static %}
-
+<link rel="stylesheet" href="{% static 'css/extra_styles.css' %}">
 {% block content %}
 <div class="container-fluid p-0">
     <div class="row" style="height: calc(100vh - 100px);">
@@ -36,9 +36,11 @@
                                      style="background-color: #B7A684; color: #2B1D14; height: 200px;"
                                      data-django-shop-id="{{ shop.id }}">
                                     <div class="row g-0 h-100">
-                                        <div class="col-auto d-flex align-items-center justify-content-center" style="padding: 10px;">
-                                            <img src="{{ shop.image.url }}" alt="{{ shop.name }}" class="rounded" style="width: 160px; height: 160px; object-fit: contain;">
-                                        </div>
+                                        <div style="width: 100%; height: 200px; background-color: #B7A684; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+              <img src="{{ shop.image.url }}"
+                   alt="{{ shop.name }}"
+                   style="max-width: 100%; max-height: 100%; object-fit: contain;">
+            </div>
                                         <div class="col d-flex">
                                             <div class="card-body d-flex flex-column justify-content-center w-100">
                                                 <div class="d-flex justify-content-between align-items-center mb-2">
@@ -76,12 +78,14 @@
                 <h5 class="text-center p-3" style="color: #2B1D14">Search Results</h5>
                 <div id="search-results-list">
                 </div>
-                <button id="backToActiveTabFromSearchBtn" class="btn btn-sm btn-outline-light mt-3" style="color: #EDE8D0; border-color: #EDE8D0;">
+                <button id="backToActiveTabFromSearchBtn" class="btn btn-sm btn-outline-dark me-1">
                     <i class="bi bi-arrow-left"></i> Back
                 </button>
             </div>
 
+            <!-- Shop Details Panel - Updated styling -->
             <div id="shop-details" class="mt-3 small" style="display: none;">
+                <!-- Content will be dynamically populated -->
             </div>
         </div>
 
@@ -94,6 +98,7 @@
 <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 {{ coffee_shops|json_script:"coffeeShopsData" }}
+
 
 {# --- NEW: MODAL HTML STRUCTURE FOR SHOP DETAILS --- #}
 <div class="modal fade" id="shopDetailsModal" tabindex="-1" aria-labelledby="shopDetailsModalLabel" aria-hidden="true">
@@ -122,6 +127,9 @@
 
 {# Import your JavaScript modules as type="module" #}
 <script type="module" src="{% static 'mapapp/js/main.js' %}"></script>
+<script>
+  window.INITIAL_BOOKMARKS = JSON.parse('{{ bookmarked_shops_json|safe|escapejs }}');
+</script>
 {% endblock %}
 
 {% block extra_styles %}
@@ -157,6 +165,35 @@
 .hover-card:hover, .hover-scale:hover {
     transform: translateY(-4px); /* Lifts the card slightly */
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); /* Adds a shadow for depth */
+}
+
+/* ===== SHOP DETAILS PANEL STYLING ===== */
+/* Removed white background and border */
+#shop-details {
+    background-color: transparent;
+    border: none;
+    padding: 0;
+}
+
+/* Removed dark brown border around image */
+#shop-details img {
+    border: none;
+    max-width: 100%;
+    height: 250px; /* Fixed height for consistency */
+    object-fit: cover; /* Ensure image fills container without distortion */
+    display: block; /* Ensure proper spacing */
+    margin-left: auto; /* Center image */
+    margin-right: auto;
+    margin-bottom: 15px;
+    border-radius: 8px;
+}
+
+/* Optional: Larger shop name */
+#shop-details h4 {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #2B1D14;
+    margin-bottom: 15px;
 }
 </style>
 {% endblock %}

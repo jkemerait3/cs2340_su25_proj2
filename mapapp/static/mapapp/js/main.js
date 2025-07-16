@@ -12,6 +12,7 @@ import { PanelManager } from './ui/panelManager.js';
 import { TabManager } from './ui/tabManager.js';
 import { CardRenderer } from './ui/cardRenderer.js';
 import { markerHandler } from './map/markerHandler.js';
+import { UrlRouter } from './routing/urlRouter.js';
 
 document.addEventListener('DOMContentLoaded', async function() {
     // Initialize the map
@@ -28,13 +29,20 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     // Initialize UI components
     const panelManager = new PanelManager(); // Handles showing/hiding main panels
-    const cardRenderer = new CardRenderer(dataStore, panelManager); // Renders shop cards
+    const urlRouter = new UrlRouter(); // Manages URL routing and hashes
+    const cardRenderer = new CardRenderer(dataStore, panelManager, map, urlRouter); // Renders shop cards
     const tabManager = new TabManager(panelManager, cardRenderer, dataStore); // Manages tabs and their content
 
     // --- Data Loading ---
     // Load Django shops (these are your bookmarked shops)
     const initialDjangoShops = getDjangoShopsData();
     dataStore.setDjangoShops(initialDjangoShops);
+
+    // Assuming dataStore is already instantiated
+    if (window.INITIAL_BOOKMARKS && Array.isArray(window.INITIAL_BOOKMARKS)) {
+        window.INITIAL_BOOKMARKS.forEach(s => s.type = 'django');
+        dataStore.setBookmarkedShops(window.INITIAL_BOOKMARKS);
+    }
 
     // Get Django shop names for duplicate checking
     const localShopNames = initialDjangoShops.map(shop => shop.name.toLowerCase().trim());
@@ -47,8 +55,8 @@ document.addEventListener('DOMContentLoaded', async function() {
     dataStore.setAllSearchableShops([...dataStore.djangoShops, ...dataStore.overpassCafes]);
 
     // --- Plotting Markers on Map ---
-    markerHandler.plotDjangoMarkers(map, dataStore.djangoShops, localIcon, panelManager, dataStore);
-    markerHandler.plotOverpassMarkers(map, dataStore.overpassCafes, panelManager, dataStore);
+    markerHandler.plotDjangoMarkers(map, dataStore.djangoShops, localIcon, panelManager, dataStore, urlRouter);
+    markerHandler.plotOverpassMarkers(map, dataStore.overpassCafes, panelManager, dataStore, urlRouter);
 
     // --- Initial Map Fit ---
     if (dataStore.djangoShops.length > 0) {
@@ -97,4 +105,19 @@ document.addEventListener('DOMContentLoaded', async function() {
             tabManager.filterAllShops(''); // This will reset to showing the active tab
         });
     }
+
+    urlRouter.onShopSelected(({ name, lat, lng }) => {
+    const shop = dataStore.allSearchableShops.find(s =>
+        s.name === name &&
+        Math.abs(s.latitude - lat) < 0.0001 &&
+        Math.abs(s.longitude - lng) < 0.0001
+    );
+    if (shop) {
+        panelManager.showShopDetailsPanel(shop);
+    }
+    });
+
+
+    urlRouter.handleInitialLoad(); // Trigger on first load
+    urlRouter.startListening();    // Listen for hash or query changes
 });

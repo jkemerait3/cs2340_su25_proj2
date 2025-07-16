@@ -28,9 +28,9 @@ def register(request):
             return redirect('home')
     else:
         form = UserCreationForm()
-    return render(request, 'home/register.html', {'form': form})
+    return render(request, 'account/register.html', {'form': form})
 
-def coffee_shops(request):
+def shops(request):
     shops = CoffeeShop.objects.annotate(
         average_rating=Avg('reviews__rating'),
         review_count=Count('reviews')
@@ -40,7 +40,7 @@ def coffee_shops(request):
     if request.user.is_authenticated:
         bookmarked_shops = request.user.favorite_shops.all()
 
-    return render(request, 'home/coffee_shops.html', {
+    return render(request, 'home/shops.html', {
         'shops': shops,
         'bookmarked_shops': bookmarked_shops,
     })
@@ -89,7 +89,7 @@ def add_review(request, shop_id):
     else:
         form = ReviewForm()
     
-    return render(request, 'home/add_review.html', {
+    return render(request, 'review/add_review.html', {
         'form': form, 
         'shop': shop,
         'existing_review': existing_review
@@ -105,7 +105,7 @@ def edit_review(request, review_id):
             return redirect('shop_detail', pk=review.shop.id)
     else:
         form = ReviewForm(instance=review)
-    return render(request, 'home/edit_review.html', {
+    return render(request, 'review/edit_review.html', {
         'form': form,
         'review': review
     })
@@ -117,7 +117,7 @@ def delete_review(request, review_id):
         shop_id = review.shop.id
         review.delete()
         return redirect('shop_detail', pk=shop_id)
-    return render(request, 'home/delete_review.html', {'review': review})
+    return render(request, 'review/delete_review.html', {'review': review})
 
 def about(request):
     return render(request, 'home/about.html')
@@ -127,7 +127,7 @@ def account_view(request):
     user = request.user
     bookmarked_shops = user.favorite_shops.all()  # Make sure `related_name='favorite_shops'` is set
     reviews = Review.objects.filter(user=user).select_related('shop')
-    return render(request, 'home/account.html', {
+    return render(request, 'account/account.html', {
         'bookmarked_shops': bookmarked_shops,
         'reviews': reviews,
     })

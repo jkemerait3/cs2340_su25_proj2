@@ -9,6 +9,7 @@ export class DataStore {
         this._djangoShops = [];
         this._overpassCafes = [];
         this._allSearchableShops = [];
+        this._bookmarkedShops = [];
     }
 
     get djangoShops() {
@@ -35,6 +36,14 @@ export class DataStore {
         this._allSearchableShops = shops;
     }
 
+    get bookmarkedShops() {
+        return this._bookmarkedShops;
+    }
+
+    setBookmarkedShops(shops) {
+        this._bookmarkedShops = shops;
+    }
+
     /**
      * Updates the bookmark status of a Django shop.
      * @param {number} shopId - The ID of the shop to update.
@@ -44,15 +53,15 @@ export class DataStore {
     updateBookmarkStatus(shopId, isBookmarked, shopData = null) {
         if (isBookmarked) {
             // Add to djangoShops if not already present
-            if (!this._djangoShops.some(s => s.id === shopId)) {
+            if (!this._bookmarkedShops.some(s => s.id === shopId)) {
                 const shopToAdd = shopData || this._allSearchableShops.find(s => s.type === 'django' && s.id === shopId);
                 if (shopToAdd) {
-                    this._djangoShops.push(shopToAdd);
+                    this._bookmarkedShops.push(shopToAdd);
                 }
             }
         } else {
             // Remove from djangoShops
-            this._djangoShops = this._djangoShops.filter(s => s.id !== shopId);
+            this._bookmarkedShops = this._bookmarkedShops.filter(s => s.id !== shopId);
         }
     }
 }

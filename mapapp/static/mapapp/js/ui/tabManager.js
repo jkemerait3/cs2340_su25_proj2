@@ -139,24 +139,27 @@ export class TabManager {
      * sorts bookmarked shops, and renders them.
      */
     displayBookmarkedShopsTab() {
-        this.panelManager.setCurrentActiveTabId('bookmarked-shops-pane');
-        this.panelManager.showTabContentPanel(); // Use panelManager to show the main tab content wrapper
+    this.panelManager.setCurrentActiveTabId('bookmarked-shops-pane');
+    this.panelManager.showTabContentPanel(); // Use panelManager to show the main tab content wrapper
 
-        // Ensure only the 'Bookmarked Shops' tab pane is active for Bootstrap's tab logic
-        this.bookmarkedShopsTabPane.classList.add('show', 'active');
-        this.allShopsTabPane.classList.remove('show', 'active');
+    // Ensure only the 'Bookmarked Shops' tab pane is active for Bootstrap's tab logic
+    this.bookmarkedShopsTabPane.classList.add('show', 'active');
+    this.allShopsTabPane.classList.remove('show', 'active');
 
-        // Update tab button visual state
-        this._activateTabButton(this.bookmarkedShopsTabBtn);
+    // Update tab button visual state
+    this._activateTabButton(this.bookmarkedShopsTabBtn);
 
-        // Sort bookmarked shops alphabetically by name
-        const sortedBookmarks = [...this.dataStore.djangoShops].sort((a, b) => {
-            return a.name.localeCompare(b.name);
-        });
+    // ✅ Clear previous cards before re-rendering
+    this.bookmarkedShopsList.innerHTML = '';
 
-        this.cardRenderer.renderInitialShopCards(sortedBookmarks, this.bookmarkedShopsList);
-        this.bookmarkedShopsTabPane.scrollTop = 0; // Scroll to top of the pane
-    }
+    // Sort bookmarked shops alphabetically by name
+    const sortedBookmarks = [...this.dataStore.bookmarkedShops].sort((a, b) => {
+        return a.name.localeCompare(b.name);
+    });
+
+    this.cardRenderer.renderInitialShopCards(sortedBookmarks, this.bookmarkedShopsList);
+    this.bookmarkedShopsTabPane.scrollTop = 0; // Scroll to top of the pane
+}
 
     /**
      * @brief Loads additional shops for infinite scrolling within the "All Shops" tab.

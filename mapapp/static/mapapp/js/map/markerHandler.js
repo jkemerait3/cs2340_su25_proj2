@@ -7,6 +7,7 @@ import { localIcon } from './mapInitializer.js'; // Assuming localIcon is still 
 // No direct import of DataStore or PanelManager; they are passed as arguments to keep this module focused.
 
 const markers = []; // To keep track of all markers if needed for later removal/management
+const markerMap = new Map(); // key: 'lat,lng'
 
 /**
  * Plots Django (database) shop markers on the map.
@@ -17,14 +18,17 @@ const markers = []; // To keep track of all markers if needed for later removal/
  * @param {DataStore} dataStore - Instance of DataStore to get shop data for details.
  */
 export const markerHandler = {
-    plotDjangoMarkers: function(map, shops, icon, panelManager, dataStore) {
+    plotDjangoMarkers: function(map, shops, icon, panelManager, dataStore, urlRouter) {
         shops.forEach(shop => {
+            const latLngKey = `${shop.latitude},${shop.longitude}`;
             const marker = L.marker([shop.latitude, shop.longitude], { icon: icon }).addTo(map);
             marker.bindPopup(`<b>${shop.name}</b><br>${shop.address}`);
             marker.on('click', () => {
                 panelManager.displayShopDetails(shop, 'django', map, dataStore);
                 map.panTo([shop.latitude, shop.longitude]);
+                urlRouter.navigateToShop(shop, 'hash');
             });
+            markerMap.set(latLngKey, marker);
             markers.push(marker);
         });
     },
@@ -36,17 +40,28 @@ export const markerHandler = {
      * @param {PanelManager} panelManager - Instance of PanelManager to display shop details.
      * @param {DataStore} dataStore - Instance of DataStore to get shop data for details.
      */
-    plotOverpassMarkers: function(map, cafes, panelManager, dataStore) {
-        cafes.forEach(cafe => {
-            const marker = L.marker([cafe.latitude, cafe.longitude]).addTo(map); // Default marker for OSM
-            marker.bindPopup(`<b>${cafe.name}</b><br><i>(OpenStreetMap)</i>`);
-            marker.on('click', () => {
-                panelManager.displayShopDetails(cafe, 'osm', map, dataStore);
-                map.panTo([cafe.latitude, cafe.longitude]);
-            });
-            markers.push(marker);
+    plotOverpassMarkers: function(map, cafes, panelManager, dataStore, urlRouter) {
+    cafes.forEach(cafe => {
+        const latLngKey = `${cafe.latitude},${cafe.longitude}`;
+        const marker = L.marker([cafe.latitude, cafe.longitude]).addTo(map);
+        marker.bindPopup(`<b>${cafe.name}</b><br><i>(OpenStreetMap)</i>`);
+        marker.on('click', () => {
+            panelManager.displayShopDetails(cafe, 'osm', map, dataStore);
+            map.panTo([cafe.latitude, cafe.longitude]);
+            urlRouter.navigateToShop(cafe, 'hash');
+        });
+        markerMap.set(latLngKey, marker);
+        markers.push(marker);
         });
     },
+
+
+    getMarkerForShop: function(shop) {
+    if (shop.latitude != null && shop.longitude != null) {
+        return markerMap.get(`${shop.latitude},${shop.longitude}`);
+    }
+    return null;
+}
 
     // You could add functions here to clear markers, update markers, etc.
 };
