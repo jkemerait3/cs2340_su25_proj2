@@ -6,7 +6,14 @@
   <div class="row">
     <!-- Left: Image and shop details -->
     <div class="col-md-5 mb-4">
-      <img src="{{ shop.image.url }}" alt="{{ shop.name }}" class="img-fluid rounded shadow" style="width: 100%; height: auto; object-fit: cover; background-color: #EDE8D0;">
+      {% if shop.image and shop.image.url %}
+        <img src="{{ shop.image.url }}" alt="{{ shop.name }}" class="img-fluid rounded shadow"
+        style="width: 100%; height: auto; object-fit: cover; background-color: #EDE8D0;">
+        {% else %}
+          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/Coffee_icon.svg/2048px-Coffee_icon.svg.png"
+          alt="{{ shop.name }}" class="img-fluid rounded shadow"
+          style="width: 100%; height: auto; object-fit: contain; background-color: #EDE8D0;">
+        {% endif %}
       <div class="mt-3 rounded px-3 py-4" style="background-color: #B7A684; max-height: fit-content;">
         <p class="mb-1"><strong>Address:</strong> {{ shop.address }}</p>
         <p class="mb-1"><strong>Hours:</strong> {{ shop.hours }}</p>

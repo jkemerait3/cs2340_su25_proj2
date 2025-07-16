@@ -107,10 +107,15 @@
                  style="background-color: #B7A684; max-width: 800px;">
               <!-- Image -->
               <div class="flex-shrink-0 me-4" style="width: 200px;">
-                <img src="{{ review.shop.image.url }}"
-                     class="img-fluid rounded"
-                     style="height: 200px; width: 200px; object-fit: contain;"
-                     alt="{{ review.shop.name }}">
+                {% if shop.image and shop.image.url %}
+                    <img src="{{ review.shop.image.url }}" alt="{{ shop.name }}"
+                    class="rounded"
+                    style="width: 160px; height: 160px; object-fit:contain;">
+                  {% else %}
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/Coffee_icon.svg/2048px-Coffee_icon.svg.png" alt="{{ shop.name }}"
+                    class="rounded"
+                    style="width: 160px; height: 160px; object-fit:contain;">
+                  {% endif %}
               </div>
               <!-- Content -->
               <div class="flex-grow-1 d-flex flex-column justify-content-center">

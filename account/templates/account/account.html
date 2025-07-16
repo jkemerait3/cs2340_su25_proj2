@@ -16,7 +16,15 @@
             <div class="card mb-4 hover-scale" style="background-color: #B7A684; color: #2B1D14; height: 200px;">
               <div class="row g-0 h-100">
                 <div class="col-auto d-flex align-items-center justify-content-center" style="padding: 10px;">
-                  <img src="{{ shop.image.url }}" alt="{{ shop.name }}" class="rounded" style="width: 160px; height: 160px; object-fit: contain;">
+                  {% if shop.image and shop.image.url %}
+                    <img src="{{ shop.image.url }}" alt="{{ shop.name }}"
+                    class="rounded"
+                    style="width: 160px; height: 160px; object-fit:contain;">
+                  {% else %}
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/Coffee_icon.svg/2048px-Coffee_icon.svg.png" alt="{{ shop.name }}"
+                    class="rounded"
+                    style="width: 160px; height: 160px; object-fit:contain;">
+                  {% endif %}
                 </div>
                 <div class="col d-flex">
                   <div class="card-body d-flex flex-column justify-content-center w-100">
@@ -51,9 +59,17 @@
         {% for review in reviews %}
           <div class="card mb-4 hover-scale" style="background-color: #B7A684; color: #2B1D14; height: 200px;">
             <div class="row g-0 h-100">
-              <div class="col-auto d-flex align-items-center justify-content-center p-3">
-                <img src="{{ review.shop.image.url }}" alt="{{ review.shop.name }}" class="rounded" style="width: 160px; height: 160px; object-fit: contain;">
-              </div>
+              <div class="col-auto d-flex align-items-center justify-content-center" style="padding: 10px;">
+                  {% if review.shop.image and review.shop.image.url %}
+                    <img src="{{ review.shop.image.url }}" alt="{{ shop.name }}"
+                    class="rounded"
+                    style="width: 160px; height: 160px; object-fit:contain;">
+                  {% else %}
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/Coffee_icon.svg/2048px-Coffee_icon.svg.png" alt="{{ shop.name }}"
+                    class="rounded"
+                    style="width: 160px; height: 160px; object-fit:contain;">
+                  {% endif %}
+                </div>
               <div class="col d-flex">
                 <div class="card-body d-flex flex-column justify-content-between w-100">
                   <div>

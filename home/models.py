@@ -3,6 +3,11 @@ from django.contrib.auth.models import User
 from django.db.models import Avg
 
 class CoffeeShop(models.Model):
+    SOURCE_CHOICES = (
+        ('local', 'Local'),
+        ('osm', 'OpenStreetMap'),
+    )
+
     name = models.CharField(max_length=200)
     address = models.CharField(max_length=300)
     hours = models.CharField(max_length=100)
@@ -12,6 +17,7 @@ class CoffeeShop(models.Model):
     favorited_by = models.ManyToManyField(User, related_name='favorite_shops', blank=True)
     latitude = models.FloatField(null=True, blank=True)
     longitude = models.FloatField(null=True, blank=True)
+    source = models.CharField(max_length=10, choices=SOURCE_CHOICES, default='local')
     
     def __str__(self):
         return self.name

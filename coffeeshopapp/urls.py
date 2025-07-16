@@ -23,6 +23,6 @@ from mapapp.views import map_view
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('home.urls')),
-    path('map/', map_view, name='map'),
+    path('map/', include('mapapp.urls')),
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
