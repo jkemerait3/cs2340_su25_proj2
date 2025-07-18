@@ -1,22 +1,23 @@
 # summarizer/utils.py
 import requests
 from django.conf import settings
+import os
+import environ
+from pathlib import Path
 
 def summarize_reviews_hf(review_texts, shop_name = None):
    # Hugging Face summarization
     BART_URL = "https://api-inference.huggingface.co/models/facebook/bart-large-cnn"
+    BASE_DIR = Path(__file__).resolve().parent.parent
+
 
     # Kimi‑K2 via OpenRouter
     K2_URL = "https://openrouter.ai/api/v1/chat/completions"
     K2_MODEL = "moonshotai/kimi-k2"
-    HEADERS = {
-        "Authorization": f"Bearer {HUGGINGFACE_API_TOKEN}"
-    }
     OPENROUTER_HEADERS = {
-        "Authorization": f"Bearer {OPENROUTER_API_KEY}"
+        "Authorization": f"Bearer {settings.OPENROUTER_API_KEY}"
     }
     if len(review_texts) == 0:
-        print(f"{shop_name}") 
         prompt = (
             "You are a coffee expert. Here's the name of the coffee shop:\n\n"
             f"{shop_name}\n\n"
@@ -44,7 +45,6 @@ def summarize_reviews_hf(review_texts, shop_name = None):
         }
     response = requests.post(K2_URL, headers=OPENROUTER_HEADERS, json=payload)
     if response.status_code == 200:
-        return response.json()["choices"][0]["message"]["content"].strip()
+        return response.json()[0]['summary_text']
     else:
-        print("K2 API error:", response.status_code, response.text)
         return "Could not generate summary at this time."
