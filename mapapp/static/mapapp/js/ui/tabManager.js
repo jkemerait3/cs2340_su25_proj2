@@ -131,6 +131,10 @@ export class TabManager {
         if (loadingMessage) {
             loadingMessage.style.display = 'none';
         }
+        const filterPanel = document.getElementById('filterPanel');
+        if (filterPanel) {
+            filterPanel.style.setProperty('display', 'none', 'important');
+        }
     }
 
     /**
@@ -139,27 +143,32 @@ export class TabManager {
      * sorts bookmarked shops, and renders them.
      */
     displayBookmarkedShopsTab() {
-    this.panelManager.setCurrentActiveTabId('bookmarked-shops-pane');
-    this.panelManager.showTabContentPanel(); // Use panelManager to show the main tab content wrapper
+        this.panelManager.setCurrentActiveTabId('bookmarked-shops-pane');
+        this.panelManager.showTabContentPanel(); // Use panelManager to show the main tab content wrapper
 
-    // Ensure only the 'Bookmarked Shops' tab pane is active for Bootstrap's tab logic
-    this.bookmarkedShopsTabPane.classList.add('show', 'active');
-    this.allShopsTabPane.classList.remove('show', 'active');
+        // Ensure only the 'Bookmarked Shops' tab pane is active for Bootstrap's tab logic
+        this.bookmarkedShopsTabPane.classList.add('show', 'active');
+        this.allShopsTabPane.classList.remove('show', 'active');
 
-    // Update tab button visual state
-    this._activateTabButton(this.bookmarkedShopsTabBtn);
+        // Update tab button visual state
+        this._activateTabButton(this.bookmarkedShopsTabBtn);
 
-    // ✅ Clear previous cards before re-rendering
-    this.bookmarkedShopsList.innerHTML = '';
+        // Clear previous cards before re-rendering
+        this.bookmarkedShopsList.innerHTML = '';
 
-    // Sort bookmarked shops alphabetically by name
-    const sortedBookmarks = [...this.dataStore.bookmarkedShops].sort((a, b) => {
-        return a.name.localeCompare(b.name);
-    });
+        // Sort bookmarked shops alphabetically by name
+        const sortedBookmarks = [...this.dataStore.bookmarkedShops].sort((a, b) => {
+            return a.name.localeCompare(b.name);
+        });
 
-    this.cardRenderer.renderInitialShopCards(sortedBookmarks, this.bookmarkedShopsList);
-    this.bookmarkedShopsTabPane.scrollTop = 0; // Scroll to top of the pane
-}
+        this.cardRenderer.renderInitialShopCards(sortedBookmarks, this.bookmarkedShopsList);
+        this.bookmarkedShopsTabPane.scrollTop = 0; // Scroll to top of the pane
+        document.getElementById('filterPanel').style.display = 'none';
+        const filterPanel = document.getElementById('filterPanel');
+        if (filterPanel) {
+            filterPanel.style.setProperty('display', 'none', 'important');
+        }
+    }
 
     /**
      * @brief Loads additional shops for infinite scrolling within the "All Shops" tab.
@@ -218,6 +227,7 @@ export class TabManager {
             const filtered = this.dataStore.allSearchableShops.filter(shop => {
                 // Safely get the shop name, considering 'name' property first, then 'tags.name'
                 const shopName = shop.name || (shop.tags ? shop.tags.name : '');
+                const address = shop.address || (shop.tags ? shop.tags['addr:street'] || '' : '');
                 return shopName.toLowerCase().includes(lowerCaseQuery);
             });
 
@@ -232,4 +242,5 @@ export class TabManager {
             this.searchResultsPanel.scrollTop = 0; // Scroll to top of search results panel
         }
     }
+    
 }

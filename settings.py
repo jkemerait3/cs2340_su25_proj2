@@ -12,15 +12,21 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 
 from pathlib import Path
 import os
+import environ
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-t26%0(xfui^8^cn6*4yj91p-dfz-2rr!a7odcu)d12t0zu_1nk'
+
+# SECURITY WARNING: keep the API token used in production secret!
+env = environ.Env()
+environ.Env.read_env(os.path.join(BASE_DIR, "APIKEY.env"))
+DEBUG = env.bool("DEBUG", default =False)
+SECRET_KEY = env("SECRET_KEY")
+HUGGINGFACE_API_TOKEN = env("HUGGINGFACE_API_TOKEN")
+OPENROUTER_API_KEY = env("OPENROUTER_API_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -128,4 +134,3 @@ LOGOUT_REDIRECT_URL = 'home'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 LOGIN_URL = 'login'
-

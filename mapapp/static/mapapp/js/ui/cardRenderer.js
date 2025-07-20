@@ -1,4 +1,5 @@
 import { getCookie } from '../utils/csrf.js';
+import { markerHandler } from '../map/markerHandler.js';
 
 export class CardRenderer {
     constructor(dataStore, panelManager, map, urlRouter) {
@@ -35,13 +36,19 @@ export class CardRenderer {
                         : "Address not available"
                 );
 
+            const getImagePath = (image) => {
+                if (!image) return null;
+                let cleanPath = image.replace(/^\/?media\//, '');
+                return `/media/${cleanPath}`;
+            };
+
             const imageHtml = shopType === 'django'
                 ? (
                     shop.image
-                        ? `<img src="/media/${shop.image}" alt="${name}" class="rounded" style="width: 160px; height: 160px; object-fit: contain;">`
+                        ? `<img src="${getImagePath(shop.image)}" alt="${name}" class="rounded" style="width: 160px; height: 160px; object-fit: contain;">`
                         : '<div style="width: 160px; height: 160px; display: flex; align-items: center; justify-content: center; background-color: #A09070; color: #2B1D14; font-size: 1.5rem; border-radius: 8px;">☕</div>'
                 )
-                : '<div style="width: 160px; height: 160px; display: flex; align-items: center; justify-content: center; background-color: #A09070; color: #2B1D14; font-size: 1.5rem; border-radius: 8px;">🌍</div>';
+                : '<div style="width: 160px; height: 160px; display: flex; align-items: center; justify-content: center; background-color: #A09070; color: #2B1D14; font-size: 1.5rem; border-radius: 8px;">☕</div>';
 
             const bookmarkHtml = shopType === 'django'
                 ? `
@@ -106,7 +113,7 @@ export class CardRenderer {
             }
 
             if (shop) {
-                this.panelManager.displayShopDetails(shop, shopType);
+                this.panelManager.displayShopDetails(shop, shopType, this.map, this.dataStore);
                 this.urlRouter.navigateToShop(shop, 'hash');
                 if (shop.latitude && shop.longitude) {
                     this.map.panTo([shop.latitude, shop.longitude]);

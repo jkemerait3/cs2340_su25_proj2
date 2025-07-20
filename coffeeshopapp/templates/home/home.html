@@ -27,6 +27,7 @@
         Whether you're grinding through finals, writing your next big project, or just craving the perfect cup of coffee, our curated list of Atlanta's top student-friendly cafés has you covered.
         Search by vibe, amenities, and real community reviews to find the space that works best for you.
       </p>
+      <a href="/map/" class="btn mt-3 hover-scale">Explore Map</a>
       <a href="/shops/" class="btn mt-3 hover-scale">Explore Shops</a>
     </div>
   </div>
@@ -107,7 +108,7 @@
                  style="background-color: #B7A684; max-width: 800px;">
               <!-- Image -->
               <div class="flex-shrink-0 me-4" style="width: 200px;">
-                {% if shop.image and shop.image.url %}
+                {% if review.shop.image and review.shop.image.url %}
                     <img src="{{ review.shop.image.url }}" alt="{{ shop.name }}"
                     class="rounded"
                     style="width: 160px; height: 160px; object-fit:contain;">

@@ -13,8 +13,16 @@ import { TabManager } from './ui/tabManager.js';
 import { CardRenderer } from './ui/cardRenderer.js';
 import { markerHandler } from './map/markerHandler.js';
 import { UrlRouter } from './routing/urlRouter.js';
+import { filterManager } from './ui/filterManager.js';
 
 document.addEventListener('DOMContentLoaded', async function() {
+    const dropdownMenus = document.querySelectorAll('.dropdown-menu');
+    dropdownMenus.forEach(menu => {
+        menu.addEventListener('click', (e) => {
+            e.stopPropagation(); // Prevent dropdown from closing
+        });
+    });
+    
     // Initialize the map
     const map = initializeMap();
 
@@ -32,6 +40,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     const urlRouter = new UrlRouter(); // Manages URL routing and hashes
     const cardRenderer = new CardRenderer(dataStore, panelManager, map, urlRouter); // Renders shop cards
     const tabManager = new TabManager(panelManager, cardRenderer, dataStore); // Manages tabs and their content
+    filterManager.init({ tabManager, panelManager, dataStore, map, urlRouter, localIcon }); //Handles filters
 
     // --- Data Loading ---
     // Load Django shops (these are your bookmarked shops)
@@ -55,7 +64,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     dataStore.setAllSearchableShops([...dataStore.djangoShops, ...dataStore.overpassCafes]);
 
     // --- Plotting Markers on Map ---
-    markerHandler.plotDjangoMarkers(map, dataStore.djangoShops, localIcon, panelManager, dataStore, urlRouter);
+    markerHandler.plotDjangoMarkers(map, dataStore.djangoShops, panelManager, dataStore, urlRouter);
     markerHandler.plotOverpassMarkers(map, dataStore.overpassCafes, panelManager, dataStore, urlRouter);
 
     // --- Initial Map Fit ---
@@ -120,4 +129,6 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     urlRouter.handleInitialLoad(); // Trigger on first load
     urlRouter.startListening();    // Listen for hash or query changes
-});
+}
+
+);

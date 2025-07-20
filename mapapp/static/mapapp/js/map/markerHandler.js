@@ -18,10 +18,15 @@ const markerMap = new Map(); // key: 'lat,lng'
  * @param {DataStore} dataStore - Instance of DataStore to get shop data for details.
  */
 export const markerHandler = {
-    plotDjangoMarkers: function(map, shops, icon, panelManager, dataStore, urlRouter) {
+    plotDjangoMarkers: function(map, shops, panelManager, dataStore, urlRouter) {
         shops.forEach(shop => {
+            if (!map) {
+                console.warn("Map is undefined when plotting markers.");
+            return;
+            }
+
             const latLngKey = `${shop.latitude},${shop.longitude}`;
-            const marker = L.marker([shop.latitude, shop.longitude], { icon: icon }).addTo(map);
+            const marker = L.marker([shop.latitude, shop.longitude], { icon: localIcon }).addTo(map);
             marker.bindPopup(`<b>${shop.name}</b><br>${shop.address}`);
             marker.on('click', () => {
                 panelManager.displayShopDetails(shop, 'django', map, dataStore);
@@ -43,7 +48,7 @@ export const markerHandler = {
     plotOverpassMarkers: function(map, cafes, panelManager, dataStore, urlRouter) {
     cafes.forEach(cafe => {
         const latLngKey = `${cafe.latitude},${cafe.longitude}`;
-        const marker = L.marker([cafe.latitude, cafe.longitude]).addTo(map);
+        const marker = L.marker([cafe.latitude, cafe.longitude], {icon: localIcon}).addTo(map);
         marker.bindPopup(`<b>${cafe.name}</b><br><i>(OpenStreetMap)</i>`);
         marker.on('click', () => {
             panelManager.displayShopDetails(cafe, 'osm', map, dataStore);
@@ -55,13 +60,21 @@ export const markerHandler = {
         });
     },
 
-
     getMarkerForShop: function(shop) {
-    if (shop.latitude != null && shop.longitude != null) {
-        return markerMap.get(`${shop.latitude},${shop.longitude}`);
-    }
-    return null;
-}
+        if (shop.latitude != null && shop.longitude != null) {
+            return markerMap.get(`${shop.latitude},${shop.longitude}`);
+        }
+        return null;
+    },
 
-    // You could add functions here to clear markers, update markers, etc.
+    clearAllMarkers: function(map) {
+        markers.forEach(marker => {
+            if (map && marker) {
+                map.removeLayer(marker);
+            }
+        });
+        markers.length = 0;
+        markerMap.clear();
+    }
+
 };

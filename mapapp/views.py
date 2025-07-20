@@ -66,4 +66,8 @@ def map_view(request, shop_id=None):
         'bookmarked_shops_json': bookmarked_shops_json,  # JSON version for JS
         'initial_shop_id': shop_id,  # Pass shop ID to template
         'initial_shop': initial_shop,  # Pass shop data if found
-    })
+        'filter_hours': range(1, 13),
+        'filter_minutes': ['00', '15', '30', '45'],
+        'ampm_options': ['AM', 'PM']
+    }
+)
