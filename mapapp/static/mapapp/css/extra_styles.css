@@ -1,0 +1,223 @@
+/* General Layout Adjustments */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    overflow: hidden; /* Prevent body scroll if app-container handles full height */
+}
+
+/* Ensure container-fluid takes full height correctly */
+.container-fluid.p-0 {
+    height: 100vh; /* Or adjust based on your base.html header/footer */
+    display: flex; /* Make it a flex container to manage row */
+    flex-direction: column; /* Stack header/footer if any, then the row */
+}
+
+/* Main Content Row - The direct child of container-fluid that holds the left panel and map */
+.row.main-content-row {
+    flex-grow: 1; /* Make the row take remaining vertical space */
+    height: calc(100vh - 100px); /* This was inline in map.html, now here. Adjust 100px if your header/footer height changes */
+}
+
+/* Left Panel - now a flex container */
+.col-md-4.left-panel-custom { /* Using the new custom class for more specific targeting */
+    background-color: #EDE8D0; /* Light beige - Moved from inline style */
+    height: 100%; /* Ensure it fills parent height - Moved from inline style */
+    display: flex; /* Make it a flex container */
+    flex-direction: column; /* Stack children vertically */
+    overflow: hidden; /* Crucial: Prevents the whole column from scrolling */
+    padding: 0 !important; /* Reset default Bootstrap padding to control it inside sections */
+    border-right: 2px solid #2B1D14; /* Added a border for separation, similar to map.js's panel */
+    border-radius: 0.375rem; /* Matches Bootstrap's .rounded, but for consistency in custom styles */
+}
+
+/* Search Section - sticky header */
+.search-section {
+    background-color: #EDE8D0; /* Match panel background */
+    padding: 15px; /* Control padding here */
+    border-bottom: 1px solid #ddd; /* Separator */
+    position: sticky; /* Make it stick */
+    top: 0; /* Stick to the very top */
+    z-index: 3; /* Ensure it's on top of other sticky elements */
+    flex-shrink: 0; /* Prevent it from shrinking */
+}
+
+/* Search Section Title */
+.search-section .search-title { /* Using the new custom class */
+    color: #2B1D14; /* Moved from inline style */
+    margin-top: 0;
+    margin-bottom: 10px; /* Adjust as needed for spacing below title */
+    text-align: center;
+}
+
+/* Search bar margin */
+.search-section .mb-3 {
+    margin-bottom: 0 !important; /* Remove default mb-3 to make it tighter */
+}
+
+/* Tab Navigation - sticky header */
+.nav-tabs {
+    background-color: #EDE8D0; /* Match panel background */
+    padding: 0 15px; /* Add horizontal padding to tabs */
+    border-bottom: 2px solid #2B1D14; /* Separator below tabs */
+    position: sticky; /* Make it stick */
+    /* THIS IS THE CRITICAL VALUE: Adjust based on the height of your .search-section */
+    /* Measure the computed height of .search-section in dev tools. For example, if it's 60px tall. */
+    top: 70px; /* IMPORTANT: FINE-TUNE THIS VALUE after testing. */
+    z-index: 2; /* Ensure it's above scrolling content but below search-section */
+    flex-shrink: 0; /* Prevent it from shrinking */
+    margin-bottom: 0 !important; /* Remove default Bootstrap margin below nav-tabs */
+}
+
+/* Adjust tab button colors based on active/inactive state */
+.nav-tabs .nav-link {
+    border: 1px solid #B7A684;
+    color: #2B1D14; /* Default text color */
+    background-color: #EDE8D0; /* Default background */
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease; /* Smooth transition */
+    border-bottom-color: #B7A684; /* Consistent border for inactive tabs */
+}
+
+.nav-tabs .nav-link.active {
+    background-color: #B7A684 !important; /* Darker brown */
+    color: #2B1D14 !important; /* Text color for active tab */
+    border-color: #B7A684 !important; /* Border for active tab */
+    font-weight: bold;
+    border-bottom-color: transparent !important; /* Hide bottom border when active to blend with content */
+}
+
+.nav-tabs .nav-link:not(.active) {
+    background-color: #EDE8D0 !important; /* Lighter background for inactive tab */
+    color: #2B1D14 !important; /* Text color for inactive tab */
+}
+
+/* Tab Content Areas - these will scroll */
+.tab-content,
+#search-results-panel,
+#shop-details { /* Include shop-details if it's also part of this scrolling area */
+    flex-grow: 1; /* Take all remaining vertical space */
+    overflow-y: auto; /* THIS IS KEY: Make only this content scroll */
+    padding: 15px; /* Apply padding here instead of on .col-md-4 */
+    min-height: 0; /* Important for flexbox items */
+}
+
+/* Shop List inside tab panes */
+#all-shops-list,
+#bookmarked-shops-list,
+#search-results-list {
+    padding: 0; /* Reset default padding if any from Bootstrap */
+}
+
+/* Specific styling for your bookmark cards */
+.bookmark-shop-item {
+    display: block; /* Make the anchor tag a block element */
+    margin-bottom: 10px; /* Space between cards */
+}
+
+.bookmark-shop-item .shop-card-custom { /* Using the new custom class */
+    background-color: #B7A684; /* Moved from inline style */
+    color: #2B1D14; /* Moved from inline style */
+    height: 200px; /* Moved from inline style */
+    border-radius: 8px; /* Rounded corners for card */
+    overflow: hidden; /* Hide overflow if image/content is larger */
+}
+
+.bookmark-shop-item .shop-card-custom .row.g-0.h-100 {
+    height: 100%;
+}
+
+.shop-image-col { /* New class for the image column */
+    padding: 10px; /* Moved from inline style */
+}
+
+.shop-image-custom { /* Using the new custom class */
+    width: 160px; /* Moved from inline style */
+    height: 160px; /* Moved from inline style */
+    object-fit: contain; /* Moved from inline style */
+    border-radius: 8px; /* Rounded image */
+}
+
+.bookmark-button { /* New class for the bookmark button */
+    border: none;
+    background: none;
+    padding: 0;
+}
+
+.bookmark-icon { /* New class for the bookmark icon */
+    font-size: 1.3rem; /* Moved from inline style */
+    color: #ffc107; /* Moved from inline style */
+}
+
+.bookmark-shop-item .card-body {
+    padding: 15px;
+}
+
+/* Re-apply your .hover-card and .hover-scale styles */
+.hover-card, .hover-scale {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.hover-card:hover, .hover-scale:hover {
+    transform: translateY(-4px); /* Lifts the card slightly */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); /* Adds a shadow for depth */
+}
+
+/* Other general styles (from your original CSS) */
+.emoji-icon {
+    font-size: 22px;
+    text-align: center;
+    line-height: 25px;
+}
+
+/* Custom Scrollbar for Webkit Browsers (Chrome, Safari, Edge) */
+.tab-content::-webkit-scrollbar,
+#search-results-panel::-webkit-scrollbar,
+#shop-details::-webkit-scrollbar {
+    width: 8px; /* Width of the scrollbar */
+}
+
+.tab-content::-webkit-scrollbar-track,
+#search-results-panel::-webkit-scrollbar-track,
+#shop-details::-webkit-scrollbar-track {
+    background: #f1f1f1; /* Color of the tracking area */
+    border-radius: 10px;
+}
+
+.tab-content::-webkit-scrollbar-thumb,
+#search-results-panel::-webkit-scrollbar-thumb,
+#shop-details::-webkit-scrollbar-thumb {
+    background: #B7A684; /* Color of the scroll thumb */
+    border-radius: 10px;
+}
+
+.tab-content::-webkit-scrollbar-thumb:hover,
+#search-results-panel::-webkit-scrollbar-thumb:hover,
+#shop-details::-webkit-scrollbar-thumb:hover {
+    background: #8F7B5E; /* Color of the scroll thumb on hover */
+}
+
+/* Search Results Title */
+.search-results-title { /* New class for the search results title */
+    color: #2B1D14;
+}
+
+/* Adjustments for the back button in search results if it exists */
+#backToActiveTabFromSearchBtn {
+    display: block; /* Make it take full width below search results */
+    width: fit-content; /* Adjust width to content */
+    margin: 15px auto 0 auto; /* Center it and add top margin */
+    padding: 8px 20px;
+    background-color: #2B1D14; /* Darker button background */
+    border-color: #2B1D14;
+    color: #EDE8D0 !important; /* Light text color */
+}
+
+#backToActiveTabFromSearchBtn:hover {
+    background-color: #4A3A2C;
+    border-color: #4A3A2C;
+}
+
+/* Adjustments for #search-results-panel and #shop-details visibility, as they are initially hidden */
+#search-results-panel, #shop-details {
+    display: none; /* Controlled by JavaScript */
+    padding: 15px; /* Apply padding here as it's the scrolling container */
+}
