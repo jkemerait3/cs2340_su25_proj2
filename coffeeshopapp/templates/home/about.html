@@ -1,13 +1,108 @@
-{% extends 'base.html' %}
-{% block title %}Home{% endblock %}
+{% extends 'home/base.html' %}
+{% block title %}About{% endblock %}
+
 {% block content %}
-<div class="hero text-center">
-  <h1>About Page</h1>
-  <p>Explore study-ready coffee shops across Atlanta & filter to your needs. Dive into community reviews and discover your next favorite spot.</p>
-  <hr>
-  <h2>Meet the Team</h2>
-  <p>This project was brought to you by:<br>
-    Sam Allahverdi, Tate Johnson, James Kemerait, and Tahiyat Mahmood.</p>
-  <a href="https://github.com/jkemerait3/cs2340_su25_proj2.git/" class="btn">Github Repo</a>
+<div class="container mt-5">
+  <div class="row align-items-start">
+    <!-- Mission -->
+    <div class="col-md-7">
+      <h1 class="mb-3">About Cafe Finder</h1>
+      <p>Find your perfect study spot in Atlanta's coffee scene — curated, reviewed, and community-driven.</p>
+
+      <h2 class="mt-4">Our Mission</h2>
+      <p>We help students and remote workers find the best coffee shops for focus, comfort, and quality. Our platform delivers accurate info on seating, outlets, noise levels, and real user reviews to help you choose the right space.</p>
+    </div>
+
+    <!-- Logo Image -->
+    <div class="col-md-5 text-center">
+      <img src="/media/shop_images/CoffeeLogo.png"
+           alt="Coffee Shop Logo"
+           class="img-fluid rounded shadow mt-1 mb-4"
+           style="width: 250px; height: 250px; object-fit: contain;">
+    </div>
+  </div>
+
+  <!-- What You Can Do + Meet the Team -->
+  <div class="row justify-content-center mt-5 text-center">
+    <div class="col-md-6 mb-4">
+      <div class="p-4 rounded h-100 hover-scale" style="background-color: #B7A684;">
+        <h2>What You Can Do</h2>
+        <ul class="list-unstyled mb-0">
+          <li>📍 Browse curated coffee shop listings in Atlanta</li>
+          <li>💬 Read and contribute reviews</li>
+          <li>🔍 Filter by Wi-Fi, power outlets, seating, and more</li>
+          <li>🗺️ View locations on an interactive map</li>
+          <li>📸 Preview shops with community-submitted photos</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="col-md-6 mb-4">
+      <div class="p-4 rounded h-100 d-flex align-items-center justify-content-center flex-column hover-scale" style="background-color: #B7A684;">
+        <h2>Meet the Team</h2>
+        <ul class="list-unstyled mb-0">
+          <li><strong>Sam Allahverdi</strong> – UI/UX & Styling</li>
+          <li><strong>Tate Johnson</strong> – Testing & Team Website</li>
+          <li><strong>James Kemerait</strong> – Backend & Data Integration</li>
+          <li><strong>Tahiyat Mahmood</strong> – Frontend & Map</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Resources + Join Community + Get in Touch -->
+  <div class="row justify-content-center text-center mt-4">
+    <!-- Resources -->
+    <div class="col-md-4 mb-4 d-flex flex-column">
+      <div class="p-3 flex-grow-1">
+        <h3 class="mb-3">Resources</h3>
+        <p class="text-muted mb-3" style="max-width: 300px; margin: 0 auto;">
+          Browse our open-source codebase and project documentation.
+        </p>
+      </div>
+      <div class="mt-auto">
+        <a href="https://github.com/jkemerait3/cs2340_su25_proj2.git" class="btn btn-sm btn-outline-dark me-1 mb-1 hover-scale">GitHub</a>
+        <a href="https://sites.google.com/view/cs2340project1summer2025/home" class="btn btn-sm btn-outline-dark mb-1 hover-scale">Team Site</a>
+      </div>
+    </div>
+
+    <!-- Join Community -->
+    <div class="col-12 col-md-4 mb-2 d-flex flex-column">
+      <div class="p-3 flex-grow-1">
+        <h3 class="mb-3">Join Our Community</h3>
+        <p class="text-muted mb-3" style="max-width: 300px; margin: 0 auto;">
+          Save favorite spots, post reviews, and help others discover great places.
+        </p>
+      </div>
+      <div class="mt-auto">
+        {% if user.is_authenticated %}
+          <a href="/map/" class="btn btn-sm btn-primary hover-scale">Discover</a>
+        {% else %}
+          <a href="{% url 'register' %}" class="btn btn-sm btn-primary hover-scale">Create Account</a>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Get in Touch -->
+    <div class="col-md-4 mb-4 d-flex flex-column">
+      <div class="p-3 flex-grow-1">
+        <h3 class="mb-3">Get in Touch</h3>
+        <p class="text-muted mb-3" style="max-width: 300px; margin: 0 auto;">
+          Questions, ideas, or feedback? We'd love to hear from you.
+        </p>
+      </div>
+      <div class="mt-auto">
+        <a href="mailto:sam.allahverdi1@gmail.com" class="btn btn-sm btn-outline-dark hover-scale">Contact Us</a>
+      </div>
+    </div>
+  </div>
 </div>
+
+<style>
+  .hover-scale:hover {
+  transform: scale(1.015);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+</style>
 {% endblock %}

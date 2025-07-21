@@ -1,0 +1,87 @@
+{% extends 'home/base.html' %}
+{% load review_extras %}
+{% block title %}Coffee Shops{% endblock %}
+{% block content %}
+<div class="container mt-5">
+  <h2 class="mb-4">Coffee Shops in Atlanta</h2>
+  <div class="row gy-2">
+    {% for shop in shops %}
+      <div class="col-6 col-md-4 col-lg-3 mb-3">
+        <a href="{% url 'shop_detail' shop.id %}" class="text-decoration-none" style="color: inherit;">
+          <div class="card h-100 text-center hover-scale" style="font-size: 0.85rem; background-color: #B7A684; padding: 0.4rem;">
+            <!-- Image -->
+            <div style="width: 100%; height: 200px; background-color: #B7A684; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+              {% if shop.image and shop.image.url %}
+                <img src="{{ shop.image.url }}" alt="{{ shop.name }}"
+                class="img-fluid rounded shadow"
+                style="width: 100%; height: auto; object-fit: cover;">
+              {% else %}
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/Coffee_icon.svg/2048px-Coffee_icon.svg.png"
+                alt="Default coffee image"
+                class="img-fluid rounded shadow"
+                style="width: 100%; height: auto; object-fit: contain;">
+              {% endif %}
+            </div>
+
+            <div class="card-body p-2">
+              <div class="d-flex justify-content-center align-items-center mb-1">
+                <h5 class="card-title me-2" style="font-size: 1.4rem; color: #2B1D14; margin: 0.4rem 0 0.2rem 0;">{{ shop.name }}</h5>
+                <form method="post" action="{% url 'toggle_favorite' shop.id %}">
+          {% csrf_token %}
+          {% if user in shop.favorited_by.all %}
+            <button type="submit" style="border: none; background: none; padding: 0;">
+              <i class="bi bi-bookmark-fill" style="font-size: 1.2rem; color: #ffc107;"></i>
+            </button>
+          {% else %}
+            <button type="submit" style="border: none; background: none; padding: 0;">
+              <i class="bi bi-bookmark" style="font-size: 1.2rem; color: #ffc107;"></i>
+            </button>
+          {% endif %}
+        </form>
+              </div>
+
+              {% if shop.review_count > 0 %}
+                {# Container for visual stars and actual rating text, aligned horizontally #}
+                <div class="d-flex align-items-center justify-content-center mb-0"> {# mb-0 to reduce space before next line #}
+                    {# Visual approximate star rating #}
+                    <div>
+                        {% for star_type in shop.average_rating|star_rating_parts %}
+                            {% if star_type == 'full' %}
+                                <i class="bi bi-star-fill text-warning"></i>
+                            {% elif star_type == 'half' %}
+                                <i class="bi bi-star-half text-warning"></i>
+                            {% else %} {# star_type == 'empty' #}
+                                <i class="bi bi-star text-warning"></i>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                    {# Actual rating text to the right of stars #}
+                    <div class="ms-2 p-1"> {# Bootstrap class for margin-start (left margin) #}
+                      <small class="text-muted">{{ shop.average_rating|floatformat:1 }}</small>
+                    </div>
+                    <div>
+                  <small class="text-muted">({{ shop.review_count }} Reviews)</small>
+                </div>
+                </div>
+              {% else %}
+                <small class="text-muted">No reviews yet</small>
+              {% endif %}
+              <p style="color: #2B1D14; margin-bottom: 0.2rem;">{{ shop.address }}</p>
+              <p style="color: #2B1D14; margin-bottom: 0.2rem;"><strong>Hours:</strong> {{ shop.hours }}</p>
+              <p style="color: #2B1D14; margin-bottom: 0.4rem;"><small>{{ shop.amenities }}</small></p>
+            </div>
+          </div>
+        </a>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+
+<style>
+  .hover-scale:hover {
+    transform: scale(1.015);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+</style>
+{% endblock %}
