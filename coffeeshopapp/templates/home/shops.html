@@ -4,6 +4,16 @@
 {% block content %}
 <div class="container mt-5">
   <h2 class="mb-4">Coffee Shops in Atlanta</h2>
+  <form method="get" class="mb-4 d-flex justify-content-end align-items-center">
+    <label for="sort" class="me-2">Sort by:</label>
+    <select name="sort" id="sort" onchange="this.form.submit()" class="form-select w-auto"
+            style="background-color: #b3a484; color: #2B1D14; border: none;">
+      <option value="">Default</option>
+      <option value="name" {% if request.GET.sort == "name" %}selected{% endif %}>Alphabetical</option>
+      <option value="rating" {% if request.GET.sort == "rating" %}selected{% endif %}>Rating</option>
+      <option value="reviews" {% if request.GET.sort == "reviews" %}selected{% endif %}># of Reviews</option>
+    </select>
+  </form>
   <div class="row gy-2">
     {% for shop in shops %}
       <div class="col-6 col-md-4 col-lg-3 mb-3">
@@ -14,12 +24,12 @@
               {% if shop.image and shop.image.url %}
                 <img src="{{ shop.image.url }}" alt="{{ shop.name }}"
                 class="img-fluid rounded shadow"
-                style="width: 100%; height: auto; object-fit: cover;">
+                style="width: 100%; height: 100%; object-fit: contain;">
               {% else %}
                 <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/Coffee_icon.svg/2048px-Coffee_icon.svg.png"
                 alt="Default coffee image"
                 class="img-fluid rounded shadow"
-                style="width: 100%; height: auto; object-fit: contain;">
+                style="width: 100%; height: 100%; object-fit: contain;">
               {% endif %}
             </div>
 

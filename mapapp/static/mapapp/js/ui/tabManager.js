@@ -228,7 +228,13 @@ export class TabManager {
                 // Safely get the shop name, considering 'name' property first, then 'tags.name'
                 const shopName = shop.name || (shop.tags ? shop.tags.name : '');
                 const address = shop.address || (shop.tags ? shop.tags['addr:street'] || '' : '');
-                return shopName.toLowerCase().includes(lowerCaseQuery);
+                const city = shop.tags?.['addr:city'] || '';
+                return (
+                    shopName.toLowerCase().includes(lowerCaseQuery) ||
+                    address.toLowerCase().includes(lowerCaseQuery) ||
+                    city.toLowerCase().includes(lowerCaseQuery)
+                );
+
             });
 
             // Sort filtered results alphabetically
@@ -242,5 +248,4 @@ export class TabManager {
             this.searchResultsPanel.scrollTop = 0; // Scroll to top of search results panel
         }
     }
-    
 }

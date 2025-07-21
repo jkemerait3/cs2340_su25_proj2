@@ -49,7 +49,7 @@ export const markerHandler = {
     cafes.forEach(cafe => {
         const latLngKey = `${cafe.latitude},${cafe.longitude}`;
         const marker = L.marker([cafe.latitude, cafe.longitude], {icon: localIcon}).addTo(map);
-        marker.bindPopup(`<b>${cafe.name}</b><br><i>(OpenStreetMap)</i>`);
+        marker.bindPopup(`<b>${cafe.name}</b><br><i></i>`);
         marker.on('click', () => {
             panelManager.displayShopDetails(cafe, 'osm', map, dataStore);
             map.panTo([cafe.latitude, cafe.longitude]);

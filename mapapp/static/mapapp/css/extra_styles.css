@@ -221,3 +221,22 @@ body {
     display: none; /* Controlled by JavaScript */
     padding: 15px; /* Apply padding here as it's the scrolling container */
 }
+
+.card-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.card-body .view-shop-button-wrapper {
+    margin-top: auto;
+    margin-bottom: 100px;
+}
+
+.card {
+    height: 200px;
+}
+
+.card .row.g-0.h-100 {
+    height: 100%;
+}

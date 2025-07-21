@@ -56,7 +56,16 @@
                                                     <form method="post" action="{% url 'toggle_favorite' shop.id %}">
                                                         {% csrf_token %}
                                                         <button type="submit" style="border: none; background: none; padding: 0;">
-                                                            <i class="bi bi-bookmark-fill" style="font-size: 1.3rem; color: #ffc107;"></i>
+                                                            <form method="post" action="{% url 'toggle_favorite' shop.id %}">
+                                                            {% csrf_token %}
+                                                            <button type="submit" style="border: none; background: none; padding: 0;">
+                                                                {% if user in shop.favorited_by.all %}
+                                                                    <i class="bi bi-bookmark-fill" style="font-size: 1.3rem; color: #ffc107;"></i>
+                                                                {% else %}
+                                                                    <i class="bi bi-bookmark" style="font-size: 1.3rem; color: #ffc107;"></i>
+                                                                {% endif %}
+                                                            </button>
+                                                        </form>
                                                         </button>
                                                     </form>
                                                 </div>

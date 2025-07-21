@@ -20,6 +20,7 @@ export const filterManager = {
             // Hide tabs and search results, show filter panel
             tabContent.style.display = 'none';
             if (searchResultsPanel) searchResultsPanel.style.display = 'none';
+            panelManager.hideAllPanels();
             filterPanel.style.display = 'block';
         });
 

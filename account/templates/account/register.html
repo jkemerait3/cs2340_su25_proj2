@@ -21,6 +21,22 @@
             <div class="form-group mb-4">
               {{ form.password2.label_tag }} {{ form.password2 }}
             </div>
+            {% if form.errors %}
+              <div class="alert alert-danger">
+                <ul>
+                  {# Field-specific errors #}
+                  {% for field in form %}
+                    {% for error in field.errors %}
+                      <li><strong>{{ field.label }}:</strong> {{ error }}</li>
+                    {% endfor %}
+                  {% endfor %}
+                  {# Non-field errors (like password mismatches) #}
+                  {% for error in form.non_field_errors %}
+                    <li><strong>Error:</strong> {{ error }}</li>
+                  {% endfor %}
+                </ul>
+              </div>
+            {% endif %}
             <button type="submit" class="btn btn-dark w-100">Register</button>
           </form>
           <p class="mt-3 text-center" style="color: #2B1D14;">Already have an account? 

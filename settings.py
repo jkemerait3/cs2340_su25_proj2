@@ -21,12 +21,6 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 
 # SECURITY WARNING: keep the API token used in production secret!
-env = environ.Env()
-environ.Env.read_env(os.path.join(BASE_DIR, "APIKEY.env"))
-DEBUG = env.bool("DEBUG", default =False)
-SECRET_KEY = env("SECRET_KEY")
-HUGGINGFACE_API_TOKEN = env("HUGGINGFACE_API_TOKEN")
-OPENROUTER_API_KEY = env("OPENROUTER_API_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -134,3 +128,8 @@ LOGOUT_REDIRECT_URL = 'home'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 LOGIN_URL = 'login'
+env = environ.Env()
+environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
+DEBUG = env.bool("DEBUG", default =True)
+SECRET_KEY = env("SECRET_KEY")
+OPENROUTER_API_KEY = env("OPENROUTER_API_KEY")

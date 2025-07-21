@@ -1,15 +1,14 @@
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
-from django.shortcuts import redirect
-from .models import CoffeeShop
+from .models import CoffeeShop, Review
 from .forms import ReviewForm
-from .models import Review
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.db.models import Avg, Count
 from summarizer.utils import summarize_reviews_hf
+from django.http import JsonResponse
 
 def home(request):
     top_picks = CoffeeShop.objects.filter(is_top_pick=True)[:3]
@@ -32,11 +31,23 @@ def register(request):
     return render(request, 'account/register.html', {'form': form})
 
 def shops(request):
+    sort_by = request.GET.get('sort')
+
+    # Annotate shops with ratings and review count
     shops = CoffeeShop.objects.annotate(
         average_rating=Avg('reviews__rating'),
         review_count=Count('reviews')
     )
 
+    # Apply sorting based on query param
+    if sort_by == 'name':
+        shops = shops.order_by('name')
+    elif sort_by == 'rating':
+        shops = shops.order_by('-average_rating')
+    elif sort_by == 'reviews':
+        shops = shops.order_by('-review_count')
+
+    # Pass bookmarked shops if logged in
     bookmarked_shops = []
     if request.user.is_authenticated:
         bookmarked_shops = request.user.favorite_shops.all()
@@ -86,7 +97,7 @@ def add_review(request, shop_id):
             review.user = request.user
             review.shop = shop
             review.save()
-            return redirect('shop_detail', pk=shop.id)
+            return redirect('shop_detail', shop_id=shop.id)
     else:
         form = ReviewForm()
     
@@ -103,7 +114,7 @@ def edit_review(request, review_id):
         form = ReviewForm(request.POST, instance=review)
         if form.is_valid():
             form.save()
-            return redirect('shop_detail', pk=review.shop.id)
+            return redirect('shop_detail', shop_id=review.shop.id)
     else:
         form = ReviewForm(instance=review)
     return render(request, 'review/edit_review.html', {
@@ -117,7 +128,7 @@ def delete_review(request, review_id):
     if request.method == 'POST':
         shop_id = review.shop.id
         review.delete()
-        return redirect('shop_detail', pk=shop_id)
+        return redirect('shop_detail', shop_id=shop_id)
     return render(request, 'review/delete_review.html', {'review': review})
 
 def about(request):
@@ -139,6 +150,11 @@ def toggle_favorite(request, shop_id):
     user = request.user
     if user in shop.favorited_by.all():
         shop.favorited_by.remove(user)
+        action = 'unbookmarked'
     else:
         shop.favorited_by.add(user)
+        action = 'bookmarked'
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        return JsonResponse({'status': 'success', 'action': action})
     return redirect(request.META.get('HTTP_REFERER', 'home'))  # returns to previous page
+

@@ -45,6 +45,6 @@ def summarize_reviews_hf(review_texts, shop_name = None):
         }
     response = requests.post(K2_URL, headers=OPENROUTER_HEADERS, json=payload)
     if response.status_code == 200:
-        return response.json()[0]['summary_text']
+        return response.json()["choices"][0]["message"]["content"]
     else:
         return "Could not generate summary at this time."
