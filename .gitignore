@@ -1,5 +1,6 @@
 APIKEY.env
-.env
+APIKEYTEST.env
+*.env
 
 # Bytecode and caches
 __pycache__/
